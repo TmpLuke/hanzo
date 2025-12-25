@@ -75,6 +75,9 @@ client.on('interactionCreate', async (interaction) => {
     } else if (interaction.customId === 'close_ticket') {
       const { handleCloseTicket } = await import('./utils/ticketHandler.js');
       await handleCloseTicket(interaction);
+    } else if (interaction.customId === 'get_all_alerts') {
+      const { handleGetAllAlerts } = await import('./commands/updates.js');
+      await handleGetAllAlerts(interaction);
     }
   }
 
@@ -83,6 +86,9 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.customId === 'ticket_select') {
       const { handleTicketSelect } = await import('./utils/ticketHandler.js');
       await handleTicketSelect(interaction);
+    } else if (interaction.customId === 'updates_select') {
+      const { handleUpdatesSelect } = await import('./commands/updates.js');
+      await handleUpdatesSelect(interaction);
     }
   }
 
