@@ -201,9 +201,8 @@ async function createTicketChannel(interaction, ticketType) {
     .single();
   
   const ticketNumber = (lastTicket?.ticket_number || 0) + 1;
-  const username = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const paddedNumber = String(ticketNumber).padStart(3, '0');
-  const channelName = `${username}-${paddedNumber}`;
+  const paddedNumber = String(ticketNumber).padStart(4, '0');
+  const channelName = `ticket-${paddedNumber}`;
 
   const channel = await interaction.guild.channels.create({
     name: channelName,
