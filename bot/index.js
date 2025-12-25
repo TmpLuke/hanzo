@@ -38,7 +38,7 @@ client.once('ready', async () => {
   client.user.setActivity('/redeem to get your role!', { type: 'PLAYING' });
 });
 
-// Handle interactions (commands, buttons, modals)
+// Handle interactions (commands, buttons, modals, select menus)
 client.on('interactionCreate', async (interaction) => {
   // Handle slash commands
   if (interaction.isChatInputCommand()) {
@@ -72,6 +72,17 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.customId === 'redeem_button') {
       const { handleRedeemButton } = await import('./commands/redeem.js');
       await handleRedeemButton(interaction);
+    } else if (interaction.customId === 'close_ticket') {
+      const { handleCloseTicket } = await import('./utils/ticketHandler.js');
+      await handleCloseTicket(interaction);
+    }
+  }
+
+  // Handle select menu interactions
+  if (interaction.isStringSelectMenu()) {
+    if (interaction.customId === 'ticket_select') {
+      const { handleTicketSelect } = await import('./utils/ticketHandler.js');
+      await handleTicketSelect(interaction);
     }
   }
 
@@ -80,6 +91,9 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.customId === 'redeem_modal') {
       const { handleRedeemModal } = await import('./commands/redeem.js');
       await handleRedeemModal(interaction);
+    } else if (interaction.customId.startsWith('ticket_modal_')) {
+      const { handleTicketModalSubmit } = await import('./utils/ticketHandler.js');
+      await handleTicketModalSubmit(interaction);
     }
   }
 });
