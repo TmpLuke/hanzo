@@ -192,7 +192,8 @@ export async function handleTicketModalSubmit(interaction) {
 async function createTicketChannel(interaction, ticketType) {
   const config = TICKET_CONFIG[ticketType];
   const ticketNumber = Math.floor(Math.random() * 10000);
-  const channelName = `ticket-${ticketNumber}`;
+  const username = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const channelName = `user-${username}-${ticketNumber}`;
 
   const channel = await interaction.guild.channels.create({
     name: channelName,
