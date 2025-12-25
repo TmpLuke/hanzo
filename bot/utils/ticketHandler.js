@@ -5,28 +5,28 @@ import { generateTranscript } from './transcriptGenerator.js';
 
 const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
-// Ticket configuration - EDIT THESE CATEGORY IDs
+// Ticket configuration - reads from environment variables
 const TICKET_CONFIG = {
   purchase: {
-    categoryId: 'YOUR_PURCHASE_CATEGORY_ID', // Replace with your category ID
+    categoryId: process.env.PURCHASE_CATEGORY_ID || null,
     emoji: '🛒',
     title: 'Purchase Information',
     color: '#1db954'
   },
   support: {
-    categoryId: 'YOUR_SUPPORT_CATEGORY_ID', // Replace with your category ID
+    categoryId: process.env.SUPPORT_CATEGORY_ID || null,
     emoji: '👤',
     title: 'Support Request',
     color: '#1db954'
   },
   hwid_reset: {
-    categoryId: 'YOUR_HWID_CATEGORY_ID', // Replace with your category ID
+    categoryId: process.env.HWID_CATEGORY_ID || null,
     emoji: '🔄',
     title: 'License Key Reset',
     color: '#1db954'
   },
   claim_role: {
-    categoryId: 'YOUR_CLAIM_CATEGORY_ID', // Replace with your category ID
+    categoryId: process.env.CLAIM_CATEGORY_ID || null,
     emoji: '⭐',
     title: 'Claim Role/Key',
     color: '#1db954'
