@@ -9,6 +9,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent, // Need this to read message content
   ],
 });
 
@@ -100,6 +101,24 @@ client.on('interactionCreate', async (interaction) => {
     } else if (interaction.customId.startsWith('ticket_modal_')) {
       const { handleTicketModalSubmit } = await import('./utils/ticketHandler.js');
       await handleTicketModalSubmit(interaction);
+    }
+  }
+});
+
+// Auto-react to messages in specific channel
+client.on('messageCreate', async (message) => {
+  // Ignore bot messages
+  if (message.author.bot) return;
+
+  // Check if message is in the auto-react channel
+  const AUTO_REACT_CHANNEL_ID = '1453498365005529241';
+  
+  if (message.channel.id === AUTO_REACT_CHANNEL_ID) {
+    try {
+      await message.react('👍');
+      await message.react('👎');
+    } catch (error) {
+      console.error('Error adding reactions:', error);
     }
   }
 });
