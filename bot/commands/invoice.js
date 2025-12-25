@@ -99,38 +99,45 @@ export default {
         redemption = redemptionData;
       }
 
-      // Create invoice embed
+      // Create beautiful invoice embed
       const invoiceEmbed = new EmbedBuilder()
-        .setColor('#667eea')
+        .setColor('#5865F2')
         .setTitle('📄 Invoice Details')
-        .setDescription(`**Order Number:** \`${order.order_number}\``)
+        .setDescription(
+          `**Order Number:** \`${order.order_number}\`\n` +
+          `**Status:** ${order.status === 'completed' ? '✅ Completed' : '⏳ Pending'}`
+        )
         .addFields(
-          { name: '👤 Customer', value: order.customer_name || 'N/A', inline: true },
+          { name: '\u200B', value: '**Customer Information**', inline: false },
+          { name: '👤 Name', value: order.customer_name || 'N/A', inline: true },
           { name: '📧 Email', value: order.customer_email, inline: true },
-          { name: '📅 Date', value: `<t:${Math.floor(new Date(order.created_at).getTime() / 1000)}:F>`, inline: false },
+          { name: '📅 Purchase Date', value: `<t:${Math.floor(new Date(order.created_at).getTime() / 1000)}:F>`, inline: false },
+          { name: '\u200B', value: '**Order Details**', inline: false },
           { name: '🎮 Product', value: order.product_name, inline: true },
           { name: '⏱️ Variant', value: order.variant_label || 'N/A', inline: true },
-          { name: '💰 Amount', value: `$${Number(order.amount).toFixed(2)}`, inline: true },
-          { name: '📊 Status', value: order.status === 'completed' ? '✅ Completed' : '⏳ Pending', inline: true },
-          { name: '💳 Payment', value: order.payment_method || 'N/A', inline: true },
-          { name: '🆔 Payment ID', value: order.payment_id ? `\`${order.payment_id.substring(0, 20)}...\`` : 'N/A', inline: true }
+          { name: '💰 Amount Paid', value: `$${Number(order.amount).toFixed(2)}`, inline: true },
+          { name: '\u200B', value: '**Payment Information**', inline: false },
+          { name: '💳 Method', value: order.payment_method || 'N/A', inline: true },
+          { name: '🆔 Transaction ID', value: order.payment_id ? `\`${order.payment_id.substring(0, 20)}...\`` : 'N/A', inline: true },
+          { name: '\u200B', value: '\u200B', inline: true }
         )
+        .setThumbnail('https://i.imgur.com/YourHanzoLogo.png') // Replace with your Hanzo logo
         .setFooter({ text: 'Hanzo Marketplace • Invoice System' })
         .setTimestamp();
 
       // Add redemption info if available
       if (redemption) {
         invoiceEmbed.addFields(
-          { name: '\u200B', value: '**Redemption Information**', inline: false },
+          { name: '\u200B', value: '**Redemption Status**', inline: false },
           { name: '🎫 Code', value: `\`${redemption.code}\``, inline: true },
-          { name: '✅ Redeemed', value: redemption.redeemed ? 'Yes' : 'No', inline: true },
+          { name: '✅ Status', value: redemption.redeemed ? '✅ Redeemed' : '⏳ Not Redeemed', inline: true },
           { name: '\u200B', value: '\u200B', inline: true }
         );
 
         if (redemption.redeemed) {
           invoiceEmbed.addFields(
             { name: '👤 Redeemed By', value: redemption.discord_username ? `<@${redemption.discord_user_id}>\n${redemption.discord_username}` : 'N/A', inline: true },
-            { name: '📅 Redeemed At', value: `<t:${Math.floor(new Date(redemption.redeemed_at).getTime() / 1000)}:R>`, inline: true },
+            { name: '📅 Redeemed On', value: `<t:${Math.floor(new Date(redemption.redeemed_at).getTime() / 1000)}:R>`, inline: true },
             { name: '\u200B', value: '\u200B', inline: true }
           );
         }

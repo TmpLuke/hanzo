@@ -10,29 +10,23 @@ export default {
     .setDescription('Redeem your customer role with your order code'),
 
   async execute(interaction) {
-    // Create beautiful embed with button
+    // Create beautiful embed matching the Edner style
     const embed = new EmbedBuilder()
-      .setColor('#667eea')
-      .setTitle('🎁 Redeem Your Customer Role')
+      .setColor('#5865F2')
+      .setTitle('⭐ Claim Role | Hanzo ⭐')
       .setDescription(
-        '**Welcome to Hanzo Marketplace!**\n\n' +
-        'Click the button below to redeem your customer role.\n' +
-        'You\'ll need the redemption code from your order confirmation email.\n\n' +
-        '**What you get:**\n' +
-        '✅ Customer role in this server\n' +
-        '✅ Access to customer-only channels\n' +
-        '✅ Priority support\n' +
-        '✅ Exclusive updates and deals'
+        '🔧 You can automatically obtain the **Customer** role and access to the Customer section by utilizing the button below.\n\n' +
+        '👇 Simply click **Customer Role** and enter your Order ID.'
       )
-      .setThumbnail('https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop')
-      .setFooter({ text: 'Hanzo Marketplace • Secure Redemption System' })
+      .setThumbnail('https://i.imgur.com/YourHanzoLogo.png') // Replace with your actual Hanzo logo URL
+      .setFooter({ text: 'Hanzo Marketplace • Secure Redemption' })
       .setTimestamp();
 
     const button = new ButtonBuilder()
       .setCustomId('redeem_button')
-      .setLabel('Redeem Code')
+      .setLabel('📦 Customer Role')
       .setStyle(ButtonStyle.Primary)
-      .setEmoji('🎫');
+      .setEmoji('📦');
 
     const row = new ActionRowBuilder().addComponents(button);
 
@@ -48,11 +42,11 @@ export default {
 export async function handleRedeemButton(interaction) {
   const modal = new ModalBuilder()
     .setCustomId('redeem_modal')
-    .setTitle('Redeem Your Code');
+    .setTitle('🎫 Redeem Your Code');
 
   const codeInput = new TextInputBuilder()
     .setCustomId('redemption_code')
-    .setLabel('Enter your redemption code')
+    .setLabel('Enter your Order ID')
     .setStyle(TextInputStyle.Short)
     .setPlaceholder('XXXX-XXXX-XXXX')
     .setRequired(true)
@@ -148,20 +142,21 @@ export async function handleRedeemModal(interaction) {
     // Success embed
     const successEmbed = new EmbedBuilder()
       .setColor('#10b981')
-      .setTitle('✅ Successfully Redeemed!')
+      .setTitle('✅ Role Claimed Successfully!')
       .setDescription(
         '**Welcome to the Hanzo family!**\n\n' +
-        `**Order:** ${redemption.order_number}\n` +
+        `**Order:** \`${redemption.order_number}\`\n` +
         `**Product:** ${redemption.product_name}\n` +
         `**Variant:** ${redemption.variant_label}\n\n` +
-        '**You now have:**\n' +
+        '**You now have access to:**\n' +
         '✅ Customer role\n' +
-        '✅ Access to exclusive channels\n' +
-        '✅ Priority support\n\n' +
+        '✅ Exclusive customer channels\n' +
+        '✅ Priority support\n' +
+        '✅ Special deals and updates\n\n' +
         'Thank you for your purchase! 🎉'
       )
       .setThumbnail(interaction.user.displayAvatarURL())
-      .setFooter({ text: 'Hanzo Marketplace • Redemption Successful' })
+      .setFooter({ text: 'Hanzo Marketplace • Role Claimed' })
       .setTimestamp();
 
     await interaction.editReply({ embeds: [successEmbed] });
