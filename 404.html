@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0;url=/index.html" />
+    <title>Redirecting…</title>
+    <script>
+      (function() {
+        var path = window.location.pathname || "/";
+        if (!path || path === "/") {
+          window.location.replace("/index.html");
+          return;
+        }
+        // Preserve path for client router
+        window.location.replace("/index.html" + "#" + path + window.location.search + window.location.hash);
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
