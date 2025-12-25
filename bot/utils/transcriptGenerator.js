@@ -66,10 +66,10 @@ function generateHTML(channel, messages) {
     }
 
     .header {
-      background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+      background: linear-gradient(135deg, #1db954 0%, #169c46 100%);
       padding: 30px;
       text-align: center;
-      border-bottom: 3px solid #4752C4;
+      border-bottom: 3px solid #169c46;
     }
 
     .header h1 {
@@ -120,7 +120,7 @@ function generateHTML(channel, messages) {
       padding: 15px;
       background: #1a1f2e;
       border-radius: 12px;
-      border-left: 3px solid #5865F2;
+      border-left: 3px solid #1db954;
       transition: transform 0.2s;
     }
 
@@ -140,7 +140,7 @@ function generateHTML(channel, messages) {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+      background: linear-gradient(135deg, #1db954 0%, #169c46 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -163,7 +163,7 @@ function generateHTML(channel, messages) {
     }
 
     .bot-badge {
-      background: #5865F2;
+      background: #1db954;
       color: white;
       padding: 2px 8px;
       border-radius: 4px;
@@ -187,7 +187,7 @@ function generateHTML(channel, messages) {
 
     .embed {
       margin-top: 10px;
-      border-left: 4px solid #5865F2;
+      border-left: 4px solid #1db954;
       background: #0f1419;
       border-radius: 8px;
       padding: 15px;
@@ -235,7 +235,7 @@ function generateHTML(channel, messages) {
     }
 
     .footer a {
-      color: #5865F2;
+      color: #1db954;
       text-decoration: none;
       font-weight: 600;
     }

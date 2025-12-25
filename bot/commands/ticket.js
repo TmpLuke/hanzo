@@ -10,7 +10,7 @@ export default {
   async execute(interaction) {
     // Create the main ticket panel embed
     const embed = new EmbedBuilder()
-      .setColor('#5865F2')
+      .setColor('#1db954')
       .setTitle('🎫 Ticket Centre | Hanzo 🎫')
       .setDescription(
         'Please submit a ticket for any questions or concerns you may have. You can also use the ticket system to purchase any of Hanzo\'s Products. We appreciate your interest and look forward to assisting you promptly.\n\n' +

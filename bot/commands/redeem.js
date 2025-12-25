@@ -12,7 +12,7 @@ export default {
   async execute(interaction) {
     // Create beautiful embed matching the Edner style
     const embed = new EmbedBuilder()
-      .setColor('#5865F2')
+      .setColor('#1db954')
       .setTitle('⭐ Claim Role | Hanzo ⭐')
       .setDescription(
         '🔧 You can automatically obtain the **Customer** role and access to the Customer section by utilizing the button below.\n\n' +

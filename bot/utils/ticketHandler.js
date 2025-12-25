@@ -11,25 +11,25 @@ const TICKET_CONFIG = {
     categoryId: 'YOUR_PURCHASE_CATEGORY_ID', // Replace with your category ID
     emoji: '🛒',
     title: 'Purchase Information',
-    color: '#5865F2'
+    color: '#1db954'
   },
   support: {
     categoryId: 'YOUR_SUPPORT_CATEGORY_ID', // Replace with your category ID
     emoji: '👤',
     title: 'Support Request',
-    color: '#5865F2'
+    color: '#1db954'
   },
   hwid_reset: {
     categoryId: 'YOUR_HWID_CATEGORY_ID', // Replace with your category ID
     emoji: '🔄',
     title: 'License Key Reset',
-    color: '#5865F2'
+    color: '#1db954'
   },
   claim_role: {
     categoryId: 'YOUR_CLAIM_CATEGORY_ID', // Replace with your category ID
     emoji: '⭐',
     title: 'Claim Role/Key',
-    color: '#5865F2'
+    color: '#1db954'
   }
 };
 

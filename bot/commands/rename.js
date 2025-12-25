@@ -29,7 +29,7 @@ export default {
       await interaction.channel.setName(newName);
 
       const embed = new EmbedBuilder()
-        .setColor('#5865F2')
+        .setColor('#1db954')
         .setTitle('✏️ Ticket Renamed')
         .setDescription(
           `**Old Name:** \`${oldName}\`\n` +

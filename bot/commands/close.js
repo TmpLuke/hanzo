@@ -26,7 +26,7 @@ export default {
     const reason = interaction.options.getString('reason') || 'No reason provided';
 
     const embed = new EmbedBuilder()
-      .setColor('#5865F2')
+      .setColor('#1db954')
       .setTitle('🔒 Closing Ticket')
       .setDescription(
         `**Closed by:** ${interaction.user}\n` +

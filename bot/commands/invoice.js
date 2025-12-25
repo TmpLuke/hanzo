@@ -101,7 +101,7 @@ export default {
 
       // Create beautiful invoice embed
       const invoiceEmbed = new EmbedBuilder()
-        .setColor('#5865F2')
+        .setColor('#1db954')
         .setTitle('📄 Invoice Details')
         .setDescription(
           `**Order Number:** \`${order.order_number}\`\n` +
