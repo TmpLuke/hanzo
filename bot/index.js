@@ -24,18 +24,18 @@ client.once('ready', async () => {
   console.log(`📊 Serving ${client.guilds.cache.size} servers`);
   
   // Register commands on startup
-  console.log('🔄 Registering slash commands...');
+  console.log('🔄 Registering ALL slash commands...');
   try {
     const { registerCommands } = await import('./deploy-commands.js');
     await registerCommands();
     console.log('✅ Commands registered successfully');
-    console.log('✅ /redeem and /invoice are now available!');
+    console.log('✅ All ticket and redemption commands are now available!');
   } catch (error) {
     console.error('❌ Failed to register commands:', error);
   }
   
   // Set bot status
-  client.user.setActivity('/redeem to get your role!', { type: 'PLAYING' });
+  client.user.setActivity('/ticket to open a ticket!', { type: 'PLAYING' });
 });
 
 // Handle interactions (commands, buttons, modals, select menus)
