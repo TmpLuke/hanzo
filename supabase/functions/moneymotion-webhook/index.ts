@@ -98,8 +98,9 @@ serve(async (req) => {
       console.log(`Payment success for session: ${sessionId}`);
 
       // Verify session status with MoneyMotion API
+      let sessionInfo = null;
       if (apiKey) {
-        const sessionInfo = await verifyCheckoutSession(sessionId, apiKey);
+        sessionInfo = await verifyCheckoutSession(sessionId, apiKey);
         if (sessionInfo) {
           console.log("Session verified:", sessionInfo);
           
@@ -143,11 +144,20 @@ serve(async (req) => {
         );
       }
 
-      // Update order status to completed
+      // Get actual amount from verified session
+      let actualAmount = order.amount;
+      if (sessionInfo && sessionInfo.totalPriceInCents) {
+        // Convert cents to dollars (MoneyMotion uses EUR cents)
+        actualAmount = sessionInfo.totalPriceInCents / 100;
+        console.log(`Updating amount from ${order.amount} to ${actualAmount}`);
+      }
+
+      // Update order status to completed with correct amount
       const { error: updateError } = await supabase
         .from("orders")
         .update({ 
           status: "completed",
+          amount: actualAmount,
           updated_at: new Date().toISOString()
         })
         .eq("id", order.id);
@@ -174,7 +184,7 @@ serve(async (req) => {
             },
             {
               name: "Amount",
-              value: `**$${Number(order.amount).toFixed(2)}**`,
+              value: `**€${Number(actualAmount).toFixed(2)}**`,
               inline: true,
             },
             {
@@ -245,7 +255,7 @@ serve(async (req) => {
               customerName: order.customer_name || "Customer",
               productName: order.product_name,
               variantLabel: order.variant_label,
-              amount: order.amount,
+              amount: actualAmount,
             }),
           }
         );

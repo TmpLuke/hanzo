@@ -11,6 +11,7 @@ export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id");
   const [order, setOrder] = useState<any>(null);
+  const [redemptionCode, setRedemptionCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +34,17 @@ export default function CheckoutSuccess() {
       }
 
       setOrder(data);
+
+      // Get redemption code
+      const { data: redemptionData } = await supabase
+        .from("redemption_codes" as any)
+        .select("code")
+        .eq("order_id", orderId)
+        .single();
+
+      if (redemptionData) {
+        setRedemptionCode(redemptionData.code);
+      }
 
       // If order is still pending, mark it as completed and send Discord notification
       if ((data as any).status === "pending") {
@@ -88,6 +100,14 @@ export default function CheckoutSuccess() {
       // Send email to customer
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        
+        // Get redemption code
+        const { data: redemptionData } = await supabase
+          .from("redemption_codes" as any)
+          .select("code")
+          .eq("order_id", orderData.id)
+          .single();
+        
         const emailResponse = await fetch(`${apiUrl}/api/send-email`, {
           method: 'POST',
           headers: {
@@ -100,6 +120,7 @@ export default function CheckoutSuccess() {
             productName: orderData.product_name,
             variantLabel: orderData.variant_label,
             amount: orderData.amount,
+            redemptionCode: redemptionData?.code || null,
           }),
         });
 

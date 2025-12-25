@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply Redemption Codes Migration</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    .container {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid #333;
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #0a0a0a;
+      border-radius: 8px;
+      border: 1px solid #333;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    .info { color: #667eea; }
+    .warning { color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎫 Apply Redemption Codes Migration</h1>
+    <p>This will add the redemption codes system to your database.</p>
+    
+    <button id="applyBtn" onclick="applyMigration()">Apply Migration</button>
+    
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://rucygmkwvmkzbxydoglm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1Y3lnbWt3dm1remJ4eWRvZ2xtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1OTYzMTMsImV4cCI6MjA4MjE3MjMxM30.5HORNuSF2hBZo1hLQ8B-SPMtVqhlrgoEB8-nepl9xc4';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function log(message, type = 'info') {
+      const output = document.getElementById('output');
+      const span = document.createElement('div');
+      span.className = type;
+      span.textContent = message;
+      output.appendChild(span);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    async function applyMigration() {
+      const btn = document.getElementById('applyBtn');
+      btn.disabled = true;
+      document.getElementById('output').innerHTML = '';
+
+      try {
+        log('📦 Starting migration...', 'info');
+
+        // Create redemption_codes table
+        log('Creating redemption_codes table...', 'info');
+        const { error: tableError } = await supabase.rpc('exec_sql', {
+          sql: `
+            CREATE TABLE IF NOT EXISTS public.redemption_codes (
+              id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+              code TEXT NOT NULL UNIQUE,
+              order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+              order_number TEXT NOT NULL,
+              customer_email TEXT NOT NULL,
+              product_name TEXT NOT NULL,
+              variant_label TEXT,
+              discord_user_id TEXT,
+              discord_username TEXT,
+              redeemed BOOLEAN DEFAULT false,
+              redeemed_at TIMESTAMP WITH TIME ZONE,
+              created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+            );
+          `
+        });
+
+        if (tableError && !tableError.message.includes('already exists')) {
+          throw tableError;
+        }
+        log('✅ Table created', 'success');
+
+        // Add redemption_code column to orders
+        log('Adding redemption_code column to orders...', 'info');
+        const { error: columnError } = await supabase.rpc('exec_sql', {
+          sql: `ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS redemption_code TEXT;`
+        });
+        
+        if (columnError && !columnError.message.includes('already exists')) {
+          throw columnError;
+        }
+        log('✅ Column added', 'success');
+
+        log('', 'info');
+        log('✅ Migration completed successfully!', 'success');
+        log('', 'info');
+        log('📋 Next steps:', 'info');
+        log('1. Your bot .env is already configured with:', 'info');
+        log('   - CUSTOMER_ROLE_ID=1453498268402192443', 'info');
+        log('   - REDEEM_LOGS_WEBHOOK_URL=(configured)', 'info');
+        log('2. Push your bot code to Railway (it will auto-deploy)', 'info');
+        log('3. Test with /redeem command in Discord', 'info');
+        log('', 'info');
+        log('🎉 Redemption system is ready!', 'success');
+
+      } catch (error) {
+        log('❌ Error: ' + error.message, 'error');
+        log('', 'info');
+        log('💡 Alternative: Run SQL manually in Supabase Dashboard', 'warning');
+        log('Go to: SQL Editor → Paste migration → Run', 'warning');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,12 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    const { orderNumber, customerEmail, customerName, productName, variantLabel, amount } = await req.json();
+    const { orderNumber, customerEmail, customerName, productName, variantLabel, amount, redemptionCode } = await req.json();
     
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const gmailUser = Deno.env.get("GMAIL_USER");
+    const gmailPassword = Deno.env.get("GMAIL_APP_PASSWORD");
     
-    if (!resendApiKey) {
-      throw new Error("RESEND_API_KEY not configured");
+    if (!gmailUser || !gmailPassword) {
+      throw new Error("Gmail credentials not configured");
     }
 
     // Beautiful HTML email template
@@ -91,10 +93,17 @@ serve(async (req) => {
 
               <!-- What's Next -->
               <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 16px; padding: 24px; margin-bottom: 30px;">
-                <h3 style="margin: 0 0 12px 0; color: #ffffff; font-size: 18px; font-weight: 600;">📦 What's Next?</h3>
-                <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
-                  Your purchase has been confirmed! You'll receive your product details and download instructions in a separate email within the next few minutes.
+                <h3 style="margin: 0 0 12px 0; color: #ffffff; font-size: 18px; font-weight: 600;">🎫 Redeem Your Customer Role</h3>
+                <p style="margin: 0 0 16px 0; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6;">
+                  Join our Discord server and use the <strong>/redeem</strong> command with your code below to get your customer role and access exclusive channels!
                 </p>
+                <div style="background: rgba(0,0,0,0.3); border: 2px dashed rgba(102, 126, 234, 0.5); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
+                  <p style="margin: 0 0 8px 0; color: rgba(255,255,255,0.6); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Your Redemption Code</p>
+                  <p style="margin: 0; color: #667eea; font-size: 24px; font-weight: 700; font-family: monospace; letter-spacing: 2px;">${redemptionCode || 'GENERATING...'}</p>
+                </div>
+                <a href="https://discord.gg/hanzo" style="display: block; background: #5865F2; color: white; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; text-align: center; box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);">
+                  Join Discord & Redeem
+                </a>
               </div>
 
               <!-- Support -->
@@ -144,29 +153,30 @@ serve(async (req) => {
 </html>
     `;
 
-    // Send email via Resend
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${resendApiKey}`,
+    // Send email via Gmail SMTP
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.gmail.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: gmailUser,
+          password: gmailPassword,
+        },
       },
-      body: JSON.stringify({
-        from: "Hanzo Marketplace <orders@hanzo.gg>",
-        to: [customerEmail],
-        subject: `✅ Order Confirmed - ${orderNumber}`,
-        html: emailHtml,
-      }),
     });
 
-    const data = await response.json();
+    await client.send({
+      from: `Hanzo Marketplace <${gmailUser}>`,
+      to: customerEmail,
+      subject: `✅ Order Confirmed - ${orderNumber}`,
+      html: emailHtml,
+    });
 
-    if (!response.ok) {
-      throw new Error(`Resend API error: ${JSON.stringify(data)}`);
-    }
+    await client.close();
 
     return new Response(
-      JSON.stringify({ success: true, emailId: data.id }),
+      JSON.stringify({ success: true, message: "Email sent via Gmail" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

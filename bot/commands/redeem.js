@@ -1,0 +1,226 @@
+import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { createClient } from '@supabase/supabase-js';
+import { config } from '../config.js';
+
+const supabase = createClient(config.supabaseUrl, config.supabaseKey);
+
+export default {
+  data: new SlashCommandBuilder()
+    .setName('redeem')
+    .setDescription('Redeem your customer role with your order code'),
+
+  async execute(interaction) {
+    // Create beautiful embed with button
+    const embed = new EmbedBuilder()
+      .setColor('#667eea')
+      .setTitle('🎁 Redeem Your Customer Role')
+      .setDescription(
+        '**Welcome to Hanzo Marketplace!**\n\n' +
+        'Click the button below to redeem your customer role.\n' +
+        'You\'ll need the redemption code from your order confirmation email.\n\n' +
+        '**What you get:**\n' +
+        '✅ Customer role in this server\n' +
+        '✅ Access to customer-only channels\n' +
+        '✅ Priority support\n' +
+        '✅ Exclusive updates and deals'
+      )
+      .setThumbnail('https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop')
+      .setFooter({ text: 'Hanzo Marketplace • Secure Redemption System' })
+      .setTimestamp();
+
+    const button = new ButtonBuilder()
+      .setCustomId('redeem_button')
+      .setLabel('Redeem Code')
+      .setStyle(ButtonStyle.Primary)
+      .setEmoji('🎫');
+
+    const row = new ActionRowBuilder().addComponents(button);
+
+    await interaction.reply({
+      embeds: [embed],
+      components: [row],
+      ephemeral: false
+    });
+  },
+};
+
+// Handle button click - show modal
+export async function handleRedeemButton(interaction) {
+  const modal = new ModalBuilder()
+    .setCustomId('redeem_modal')
+    .setTitle('Redeem Your Code');
+
+  const codeInput = new TextInputBuilder()
+    .setCustomId('redemption_code')
+    .setLabel('Enter your redemption code')
+    .setStyle(TextInputStyle.Short)
+    .setPlaceholder('XXXX-XXXX-XXXX')
+    .setRequired(true)
+    .setMaxLength(14)
+    .setMinLength(12);
+
+  const row = new ActionRowBuilder().addComponents(codeInput);
+  modal.addComponents(row);
+
+  await interaction.showModal(modal);
+}
+
+// Handle modal submission - verify and redeem
+export async function handleRedeemModal(interaction) {
+  await interaction.deferReply({ ephemeral: true });
+
+  const code = interaction.fields.getTextFieldValue('redemption_code').toUpperCase().trim();
+  const userId = interaction.user.id;
+  const username = interaction.user.tag;
+
+  try {
+    // Check if code exists and is valid
+    const { data: redemption, error: fetchError } = await supabase
+      .from('redemption_codes')
+      .select('*')
+      .eq('code', code)
+      .single();
+
+    if (fetchError || !redemption) {
+      const errorEmbed = new EmbedBuilder()
+        .setColor('#ef4444')
+        .setTitle('❌ Invalid Code')
+        .setDescription(
+          '**The redemption code you entered is invalid.**\n\n' +
+          'Please check:\n' +
+          '• Code is entered correctly (including dashes)\n' +
+          '• Code hasn\'t expired\n' +
+          '• You copied it from your order email\n\n' +
+          'Need help? Contact support!'
+        )
+        .setFooter({ text: 'Hanzo Marketplace' })
+        .setTimestamp();
+
+      return await interaction.editReply({ embeds: [errorEmbed] });
+    }
+
+    // Check if already redeemed
+    if (redemption.redeemed) {
+      const alreadyRedeemedEmbed = new EmbedBuilder()
+        .setColor('#f59e0b')
+        .setTitle('⚠️ Already Redeemed')
+        .setDescription(
+          '**This code has already been redeemed.**\n\n' +
+          `Redeemed by: <@${redemption.discord_user_id}>\n` +
+          `Redeemed on: <t:${Math.floor(new Date(redemption.redeemed_at).getTime() / 1000)}:F>\n\n` +
+          'Each code can only be used once for security.\n' +
+          'If this wasn\'t you, please contact support immediately!'
+        )
+        .setFooter({ text: 'Hanzo Marketplace • Security Alert' })
+        .setTimestamp();
+
+      return await interaction.editReply({ embeds: [alreadyRedeemedEmbed] });
+    }
+
+    // Mark as redeemed
+    const { error: updateError } = await supabase
+      .from('redemption_codes')
+      .update({
+        redeemed: true,
+        redeemed_at: new Date().toISOString(),
+        discord_user_id: userId,
+        discord_username: username
+      })
+      .eq('code', code);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    // Get customer role from config or use default
+    const customerRoleId = config.customerRoleId || process.env.CUSTOMER_ROLE_ID;
+    
+    if (customerRoleId) {
+      try {
+        const member = await interaction.guild.members.fetch(userId);
+        await member.roles.add(customerRoleId);
+      } catch (roleError) {
+        console.error('Error adding role:', roleError);
+        // Continue even if role assignment fails
+      }
+    }
+
+    // Success embed
+    const successEmbed = new EmbedBuilder()
+      .setColor('#10b981')
+      .setTitle('✅ Successfully Redeemed!')
+      .setDescription(
+        '**Welcome to the Hanzo family!**\n\n' +
+        `**Order:** ${redemption.order_number}\n` +
+        `**Product:** ${redemption.product_name}\n` +
+        `**Variant:** ${redemption.variant_label}\n\n` +
+        '**You now have:**\n' +
+        '✅ Customer role\n' +
+        '✅ Access to exclusive channels\n' +
+        '✅ Priority support\n\n' +
+        'Thank you for your purchase! 🎉'
+      )
+      .setThumbnail(interaction.user.displayAvatarURL())
+      .setFooter({ text: 'Hanzo Marketplace • Redemption Successful' })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [successEmbed] });
+
+    // Send log to redeem logs channel
+    await sendRedeemLog(interaction, redemption, code);
+
+  } catch (error) {
+    console.error('Redemption error:', error);
+
+    const errorEmbed = new EmbedBuilder()
+      .setColor('#ef4444')
+      .setTitle('❌ Redemption Failed')
+      .setDescription(
+        '**An error occurred while processing your redemption.**\n\n' +
+        'Please try again in a moment.\n' +
+        'If the problem persists, contact support with your order number.'
+      )
+      .setFooter({ text: 'Hanzo Marketplace' })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [errorEmbed] });
+  }
+}
+
+// Send log to redeem logs channel
+async function sendRedeemLog(interaction, redemption, code) {
+  try {
+    const logChannelId = config.redeemLogsChannelId || process.env.REDEEM_LOGS_CHANNEL_ID;
+    
+    if (!logChannelId) {
+      console.log('No redeem logs channel configured');
+      return;
+    }
+
+    const logChannel = await interaction.client.channels.fetch(logChannelId);
+    
+    if (!logChannel) {
+      console.log('Redeem logs channel not found');
+      return;
+    }
+
+    const logEmbed = new EmbedBuilder()
+      .setColor('#667eea')
+      .setTitle('🎫 New Redemption')
+      .addFields(
+        { name: '👤 User', value: `<@${interaction.user.id}>\n${interaction.user.tag}`, inline: true },
+        { name: '📧 Email', value: redemption.customer_email, inline: true },
+        { name: '🎮 Product', value: redemption.product_name, inline: false },
+        { name: '⏱️ Variant', value: redemption.variant_label, inline: true },
+        { name: '🔢 Order', value: redemption.order_number, inline: true },
+        { name: '🎫 Code', value: `\`${code}\``, inline: true }
+      )
+      .setThumbnail(interaction.user.displayAvatarURL())
+      .setFooter({ text: 'Hanzo Marketplace • Redeem Logs' })
+      .setTimestamp();
+
+    await logChannel.send({ embeds: [logEmbed] });
+  } catch (error) {
+    console.error('Error sending redeem log:', error);
+  }
+}
