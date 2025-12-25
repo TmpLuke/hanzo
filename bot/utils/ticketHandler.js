@@ -308,6 +308,18 @@ async function storeTicket(channelId, userId, ticketType, ticketNumber) {
 }
 
 export async function handleCloseTicket(interaction) {
+  // Check if in a ticket channel
+  if (!interaction.channel.name.startsWith('ticket-')) {
+    const embed = new EmbedBuilder()
+      .setColor('#ef4444')
+      .setTitle('❌ Not a Ticket')
+      .setDescription('This command can only be used in ticket channels!')
+      .setFooter({ text: 'Hanzo | Hanzocheats.com' })
+      .setTimestamp();
+
+    return await interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+
   await interaction.deferReply({ ephemeral: true });
 
   try {
