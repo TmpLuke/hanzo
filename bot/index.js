@@ -23,6 +23,16 @@ client.once('ready', async () => {
   console.log(`✅ Bot is online as ${client.user.tag}`);
   console.log(`📊 Serving ${client.guilds.cache.size} servers`);
   
+  // Register commands on startup
+  console.log('🔄 Registering slash commands...');
+  try {
+    const { registerCommands } = await import('./deploy-commands.js');
+    await registerCommands();
+    console.log('✅ Commands registered successfully');
+  } catch (error) {
+    console.error('❌ Failed to register commands:', error);
+  }
+  
   // Set bot status
   client.user.setActivity('Hanzo Marketplace', { type: 'WATCHING' });
 });
