@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hanzo Design System - Premium Black + Green Glow Theme */
+
+@layer base {
+  :root {
+    /* Pure Black Base */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Hanzo Emerald Green */
+    --primary: 152 76% 46%;
+    --primary-foreground: 0 0% 2%;
+
+    --secondary: 0 0% 11%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 152 76% 46%;
+    --accent-foreground: 0 0% 2%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 152 76% 46%;
+    --success-foreground: 0 0% 2%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 2%;
+
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 152 76% 46%;
+
+    --radius: 0.75rem;
+
+    /* Custom Hanzo Colors */
+    --hanzo-green: 152 76% 46%;
+    --hanzo-green-glow: 152 76% 56%;
+    --hanzo-green-dark: 152 76% 30%;
+    --hanzo-dark: 0 0% 4%;
+    --hanzo-dark-lighter: 0 0% 7%;
+    --hanzo-dark-card: 0 0% 9%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(152 76% 46%), hsl(152 76% 36%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 9%) 0%, hsl(0 0% 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(152 76% 46% / 0.15) 0%, transparent 70%);
+
+    /* Enhanced Glow Shadows */
+    --shadow-sm: 0 2px 8px hsl(0 0% 0% / 0.4);
+    --shadow-md: 0 4px 16px hsl(0 0% 0% / 0.5);
+    --shadow-lg: 0 8px 32px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 50px hsl(152 76% 46% / 0.35);
+    --shadow-glow-sm: 0 0 25px hsl(152 76% 46% / 0.25);
+    --shadow-glow-intense: 0 0 80px hsl(152 76% 46% / 0.4);
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 152 76% 46%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 0 0% 11%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 152 76% 46%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .glass-hover {
+    @apply hover:bg-card/90 hover:border-border transition-all duration-300;
+  }
+
+  .glow-green {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-green-sm {
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(158 64% 72%) 100%);
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+    @apply hover:shadow-lg hover:scale-[1.02] active:scale-[0.98];
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.5);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-success {
+    @apply bg-success/20 text-success border border-success/30;
+  }
+
+  .status-warning {
+    @apply bg-warning/20 text-warning border border-warning/30;
+  }
+
+  .status-error {
+    @apply bg-destructive/20 text-destructive border border-destructive/30;
+  }
+
+  .status-pending {
+    @apply bg-muted text-muted-foreground border border-border;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .metric-card {
+    @apply p-6 rounded-xl bg-card border border-border;
+    background: var(--gradient-card);
+  }
+
+  .nav-link {
+    @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
+  }
+
+  .nav-link-active {
+    @apply text-primary;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  .animate-glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes scaleIn {
+    from { 
+      opacity: 0; 
+      transform: scale(0.95); 
+    }
+    to { 
+      opacity: 1; 
+      transform: scale(1); 
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { 
+      box-shadow: 0 0 20px hsl(158 64% 52% / 0.3);
+    }
+    50% { 
+      box-shadow: 0 0 40px hsl(158 64% 52% / 0.5);
+    }
+  }
+
+  @keyframes snow-fall {
+    0% { transform: translateY(-10vh); }
+    100% { transform: translateY(100vh); }
+  }
+
+  @keyframes snow-sway {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(20px); }
+  }
+
+  @keyframes heart-fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+  }
+}

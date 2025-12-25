@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Discord Webhook - Hanzo Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .step h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .step p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        li {
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Discord Webhook Setup Guide</h1>
+        <p class="subtitle">Follow these steps to enable Discord notifications for your Hanzo Marketplace</p>
+
+        <div class="step warning">
+            <h2>⚠️ Step 1: Run the Database Migration</h2>
+            <p>First, you need to create the <span class="highlight">orders</span> and <span class="highlight">settings</span> tables in your Supabase database.</p>
+            <ul>
+                <li>Go to your Supabase dashboard: <a href="https://rucygmkwvmkzbxydoglm.supabase.co" target="_blank">https://rucygmkwvmkzbxydoglm.supabase.co</a></li>
+                <li>Click on <strong>SQL Editor</strong> in the left sidebar</li>
+                <li>Click <strong>New Query</strong></li>
+                <li>Copy and paste the contents of <code>supabase/migrations/20251225000002_orders_and_webhooks.sql</code></li>
+                <li>Click <strong>Run</strong> to execute the migration</li>
+            </ul>
+            <p style="margin-top: 15px;">✅ You should see a success message. This creates the tables needed for orders and Discord webhooks.</p>
+        </div>
+
+        <div class="step info">
+            <h2>🔗 Step 2: Create a Discord Webhook</h2>
+            <p>Create a webhook in your Discord server to receive purchase notifications:</p>
+            <ul>
+                <li>Open your Discord server</li>
+                <li>Go to <strong>Server Settings</strong> → <strong>Integrations</strong> → <strong>Webhooks</strong></li>
+                <li>Click <strong>New Webhook</strong></li>
+                <li>Give it a name like "Hanzo Store"</li>
+                <li>Select the channel where you want to receive notifications</li>
+                <li>Click <strong>Copy Webhook URL</strong></li>
+            </ul>
+            <p style="margin-top: 15px;">Your webhook URL will look like:</p>
+            <div class="code-block">https://discord.com/api/webhooks/1234567890/AbCdEfGhIjKlMnOpQrStUvWxYz</div>
+        </div>
+
+        <div class="step success">
+            <h2>⚙️ Step 3: Configure in Admin Panel</h2>
+            <p>Now add your webhook URL to your admin panel:</p>
+            <ul>
+                <li>Go to your admin dashboard: <code>/admin</code></li>
+                <li>Click on <strong>Settings</strong> in the sidebar</li>
+                <li>Scroll down to the <strong>Discord Webhook</strong> section</li>
+                <li>Paste your webhook URL in the input field</li>
+                <li>Click <strong>Save Webhook</strong></li>
+                <li>Click <strong>Test Webhook</strong> to verify it's working</li>
+            </ul>
+            <p style="margin-top: 15px;">✅ You should receive a test notification in your Discord channel!</p>
+        </div>
+
+        <div class="step">
+            <h2>🎯 How It Works</h2>
+            <p>Once configured, here's what happens:</p>
+            <ul>
+                <li>When a customer completes a purchase, an order is created in the database</li>
+                <li>The <code>createOrder()</code> function automatically sends a Discord notification</li>
+                <li>You'll receive a beautiful embed message with:
+                    <ul style="margin-top: 8px;">
+                        <li>Order number</li>
+                        <li>Product name and variant</li>
+                        <li>Customer email and name</li>
+                        <li>Purchase amount</li>
+                        <li>Payment method</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step info">
+            <h2>🔧 Next Steps: Integrate with Payment Flow</h2>
+            <p>To complete the integration, you need to call <code>createOrder()</code> when a payment is successful:</p>
+            <div class="code-block">import { createOrder } from "@/lib/discord";
+
+// In your payment success handler:
+await createOrder({
+  customerEmail: "customer@example.com",
+  customerName: "John Doe",
+  productId: "product-uuid",
+  variantId: "variant-uuid",
+  productName: "PUBG Cheat",
+  variantLabel: "1 Week",
+  amount: 28.90,
+  paymentMethod: "Credit Card",
+  paymentId: "payment-id-from-sellhub"
+});</div>
+            <p style="margin-top: 15px;">This will create the order in your database and send the Discord notification automatically.</p>
+        </div>
+
+        <div class="step success">
+            <h2>✅ All Done!</h2>
+            <p>Your Discord webhook integration is now set up. You'll receive notifications whenever someone makes a purchase on your marketplace!</p>
+        </div>
+    </div>
+</body>
+</html>

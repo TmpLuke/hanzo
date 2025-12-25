@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Page Preview - Hanzo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .checkmark {
+            width: 48px;
+            height: 48px;
+            color: #10b981;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            margin-bottom: 32px;
+        }
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            padding-top: 20px;
+        }
+        .detail-label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .detail-value {
+            font-weight: 600;
+        }
+        .order-number {
+            color: #10b981;
+            font-family: monospace;
+        }
+        .total {
+            font-size: 32px;
+            font-weight: 800;
+            color: #10b981;
+        }
+        .email-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 16px;
+        }
+        .email-icon {
+            width: 24px;
+            height: 24px;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+        .buttons {
+            display: flex;
+            gap: 16px;
+        }
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            color: white;
+        }
+        .btn-secondary:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .support {
+            text-align: center;
+            margin-top: 32px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon-circle">
+            <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        
+        <h1>Payment Successful!</h1>
+        <p class="subtitle">Thank you for your purchase. Your order has been confirmed.</p>
+        
+        <div class="card">
+            <div class="detail-row">
+                <span class="detail-label">Order Number</span>
+                <span class="detail-value order-number">ORD-12345678</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Product</span>
+                <span class="detail-value">PUBG Cheat</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Variant</span>
+                <span class="detail-value">1 Week</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">customer@example.com</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Total Paid</span>
+                <span class="detail-value total">$28.90</span>
+            </div>
+        </div>
+        
+        <div class="email-notice">
+            <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <div>
+                <h3 style="font-weight: 600; margin-bottom: 8px;">Check Your Email</h3>
+                <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+                    We've sent your purchase details and download instructions to 
+                    <span style="font-weight: 600; color: white;">customer@example.com</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-secondary">Continue Shopping</button>
+            <button class="btn btn-primary">Back to Home</button>
+        </div>
+        
+        <p class="support">Need help? Contact us at support@hanzo.gg</p>
+    </div>
+</body>
+</html>

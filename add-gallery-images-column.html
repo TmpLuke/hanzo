@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Gallery Images Column - REQUIRED</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        h1 { color: #1DB574; margin-top: 0; }
+        .alert {
+            background: #ef4444;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        button {
+            background: #1DB574;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover { background: #16a366; }
+        .sql-box {
+            background: #0a0a0a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #1DB574;
+            margin: 20px 0;
+            position: relative;
+        }
+        .sql-box code {
+            color: #1DB574;
+            font-size: 16px;
+            display: block;
+            white-space: pre-wrap;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1DB574;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .copy-btn:hover { background: #16a366; }
+        .steps {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .steps ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .success {
+            background: #1DB574;
+            color: #000;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert">
+            ⚠️ REQUIRED: You must run this SQL to use gallery images!
+        </div>
+
+        <h1>🖼️ Add Gallery Images Column</h1>
+        <p>Your products need the <code>gallery_images</code> column to support image slideshows.</p>
+        
+        <div class="steps">
+            <strong>📋 Follow these steps:</strong>
+            <ol>
+                <li>Click the "Copy SQL" button below</li>
+                <li>Click "Open Supabase SQL Editor"</li>
+                <li>Paste the SQL and click "Run"</li>
+                <li>Come back here and refresh your admin page</li>
+            </ol>
+        </div>
+
+        <div class="sql-box">
+            <button class="copy-btn" onclick="copySql()">📋 Copy SQL</button>
+            <code id="sql-code">ALTER TABLE products 
+ADD COLUMN IF NOT EXISTS gallery_images text[];</code>
+        </div>
+
+        <button onclick="window.open('https://supabase.com/dashboard/project/_/sql', '_blank')">
+            🚀 Open Supabase SQL Editor
+        </button>
+
+        <div class="success" id="success">
+            ✅ SQL copied to clipboard! Now paste it in the SQL Editor.
+        </div>
+    </div>
+
+    <script>
+        function copySql() {
+            const sql = document.getElementById('sql-code').textContent;
+            navigator.clipboard.writeText(sql).then(() => {
+                const successDiv = document.getElementById('success');
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

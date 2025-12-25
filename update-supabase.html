@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Supabase Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        button {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00b8e6;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #00ff0020;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+        .error {
+            background: #ff000020;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+        .info {
+            background: #00d4ff20;
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+        }
+        h1 {
+            color: #00d4ff;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #0a0a0a;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Update Supabase Products Database</h1>
+        <p>This will delete all old products and insert the new gaming products.</p>
+        
+        <button id="updateBtn" onclick="updateDatabase()">Update Database Now</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div id="steps" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://rucygmkwvmkzbxydoglm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1Y3lnbWt3dm1remJ4eWRvZ2xtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1OTYzMTMsImV4cCI6MjA4MjE3MjMxM30.5HORNuSF2hBZo1hLQ8B-SPMtVqhlrgoEB8-nepl9xc4';
+
+        const newProducts = [
+          { name: 'PUBG', description: 'Powerful PUBG suite for both ranked and casual.', price: 5.90, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'No Recoil', 'Radar', 'Undetected'], is_featured: true },
+          { name: 'Arc Raiders', description: 'Premium advantage suite for Arc Raiders.', price: 8.90, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'Loot ESP', 'Player ESP', 'Safe'], is_featured: true },
+          { name: 'Marvel Rivals', description: 'Competitive tools for Marvel Rivals ranked play.', price: 10.90, category: 'cheats', status: 'undetected', features: ['Aimbot', 'ESP', 'Ability ESP', 'Ultimate Tracker', 'Undetected'], is_featured: true },
+          { name: 'BO7', description: 'High-impact suite for Black Ops 7.', price: 7.90, category: 'cheats', status: 'undetected', features: ['Aimbot', 'Wallhack', 'Radar', 'No Recoil', 'Safe Mode'], is_featured: false },
+          { name: 'Rust', description: 'Undetected Rust tool focused on legit gameplay.', price: 9.90, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'Loot ESP', 'Player ESP', 'Anti-Aim'], is_featured: false },
+          { name: 'Fortnite', description: 'Smooth, low-FOV Fortnite advantage built for wins.', price: 11.90, category: 'cheats', status: 'undetected', features: ['Aimbot', 'ESP', 'Loot ESP', 'Build ESP', 'Undetected'], is_featured: true },
+          { name: 'Fortnite Accounts (Full Access)', description: 'Instant full-access Fortnite accounts with rare skins.', price: 15.99, category: 'accounts', status: 'undetected', features: ['Full Access', 'Rare Skins', 'Instant Delivery', 'Warranty', 'Email Changeable'], is_featured: true },
+          { name: 'Apex Legends', description: 'Configurable Apex Legends suite for ranked grinders.', price: 7.90, category: 'cheats', status: 'undetected', features: ['Aimbot', 'ESP', 'Glow ESP', 'Item ESP', 'Safe'], is_featured: false },
+          { name: 'Valorant', description: 'Low-Risk Valorant tool with clean wall info and helpers.', price: 7.90, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'Triggerbot', 'Radar', 'Undetected'], is_featured: false },
+          { name: 'HWID Spoofer', description: 'Clean slate HWID spoofer for supported games.', price: 19.99, category: 'tools', status: 'undetected', features: ['HWID Spoof', 'Instant', 'Safe', 'Multi-Game', 'Unban'], is_featured: true },
+          { name: 'Battlefield 6', description: 'Large-scale Battlefield 6 tool with conquest and beyond.', price: 11.99, category: 'cheats', status: 'undetected', features: ['Aimbot', 'ESP', 'Vehicle ESP', 'Radar', 'Undetected'], is_featured: false },
+          { name: 'Rainbow Six Siege', description: 'Tactical R6 tool with clean wall info and helpers.', price: 6.99, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'Gadget ESP', 'Recoil Control', 'Safe'], is_featured: false },
+          { name: 'Delta Force', description: 'Next-gen Delta Force advantage pack.', price: 7.90, category: 'cheats', status: 'undetected', features: ['ESP', 'Aimbot', 'Loot ESP', 'Player ESP', 'Undetected'], is_featured: true }
+        ];
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        function addStep(message, type = 'info') {
+            const stepsDiv = document.getElementById('steps');
+            const step = document.createElement('div');
+            step.className = 'step';
+            step.textContent = message;
+            step.style.color = type === 'success' ? '#00ff00' : type === 'error' ? '#ff0000' : '#00d4ff';
+            stepsDiv.appendChild(step);
+        }
+
+        async function updateDatabase() {
+            const btn = document.getElementById('updateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+            document.getElementById('steps').innerHTML = '';
+
+            try {
+                // Step 1: Get existing products
+                addStep('📡 Fetching existing products...');
+                const getResponse = await fetch(`${SUPABASE_URL}/rest/v1/products?select=id`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!getResponse.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+
+                const existingProducts = await getResponse.json();
+                addStep(`✅ Found ${existingProducts.length} existing products`, 'success');
+
+                // Step 2: Delete existing products one by one
+                if (existingProducts.length > 0) {
+                    addStep(`🗑️ Deleting ${existingProducts.length} old products...`);
+                    for (const product of existingProducts) {
+                        await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${product.id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            }
+                        });
+                    }
+                    addStep('✅ Old products deleted', 'success');
+                }
+
+                // Step 3: Insert new products
+                addStep(`📦 Inserting ${newProducts.length} new products...`);
+                const insertResponse = await fetch(`${SUPABASE_URL}/rest/v1/products`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(newProducts)
+                });
+
+                if (!insertResponse.ok) {
+                    const error = await insertResponse.text();
+                    throw new Error(`Failed to insert products: ${error}`);
+                }
+
+                addStep('✅ New products inserted successfully!', 'success');
+                showStatus('🎉 Database updated successfully! You can now close this page and refresh your Status page.', 'success');
+                btn.textContent = 'Update Complete!';
+            } catch (error) {
+                addStep(`❌ Error: ${error.message}`, 'error');
+                showStatus(`Error: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Try Again';
+            }
+        }
+    </script>
+</body>
+</html>
