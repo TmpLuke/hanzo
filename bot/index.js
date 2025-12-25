@@ -29,12 +29,13 @@ client.once('ready', async () => {
     const { registerCommands } = await import('./deploy-commands.js');
     await registerCommands();
     console.log('✅ Commands registered successfully');
+    console.log('✅ /redeem and /invoice are now available!');
   } catch (error) {
     console.error('❌ Failed to register commands:', error);
   }
   
   // Set bot status
-  client.user.setActivity('Hanzo Marketplace', { type: 'WATCHING' });
+  client.user.setActivity('/redeem to get your role!', { type: 'PLAYING' });
 });
 
 // Handle interactions (commands, buttons, modals)
