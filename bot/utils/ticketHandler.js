@@ -168,13 +168,13 @@ export async function handleTicketModalSubmit(interaction) {
   
   try {
     // Create ticket channel
-    const channel = await createTicketChannel(interaction, ticketType);
+    const { channel, ticketNumber } = await createTicketChannel(interaction, ticketType);
     
     // Send ticket embed in the channel
     await sendTicketEmbed(channel, interaction, ticketType);
     
     // Store ticket in database
-    await storeTicket(channel.id, interaction.user.id, ticketType);
+    await storeTicket(channel.id, interaction.user.id, ticketType, ticketNumber);
     
     await interaction.editReply({
       content: `✅ Ticket created! ${channel}`,
@@ -191,9 +191,19 @@ export async function handleTicketModalSubmit(interaction) {
 
 async function createTicketChannel(interaction, ticketType) {
   const config = TICKET_CONFIG[ticketType];
-  const ticketNumber = Math.floor(Math.random() * 10000);
+  
+  // Get the next ticket number from database
+  const { data: lastTicket } = await supabase
+    .from('tickets')
+    .select('ticket_number')
+    .order('ticket_number', { ascending: false })
+    .limit(1)
+    .single();
+  
+  const ticketNumber = (lastTicket?.ticket_number || 0) + 1;
   const username = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const channelName = `user-${username}-${ticketNumber}`;
+  const paddedNumber = String(ticketNumber).padStart(3, '0');
+  const channelName = `${username}-${paddedNumber}`;
 
   const channel = await interaction.guild.channels.create({
     name: channelName,
@@ -223,7 +233,7 @@ async function createTicketChannel(interaction, ticketType) {
     ],
   });
 
-  return channel;
+  return { channel, ticketNumber };
 }
 
 async function sendTicketEmbed(channel, interaction, ticketType) {
@@ -283,12 +293,13 @@ function getTicketFields(interaction, ticketType) {
   return fields;
 }
 
-async function storeTicket(channelId, userId, ticketType) {
+async function storeTicket(channelId, userId, ticketType, ticketNumber) {
   try {
     await supabase.from('tickets').insert({
       channel_id: channelId,
       user_id: userId,
       ticket_type: ticketType,
+      ticket_number: ticketNumber,
       status: 'open',
       created_at: new Date().toISOString()
     });
