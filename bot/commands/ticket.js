@@ -8,6 +8,12 @@ export default {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
+    // Fetch emojis from the guild
+    const creditCardEmoji = interaction.guild.emojis.cache.find(e => e.id === '1425047539794706492') || '💳';
+    const paypalEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453167921655320650') || '💙';
+    const cashappEmoji = interaction.guild.emojis.cache.find(e => e.id === '1425978464372133888') || '💚';
+    const cryptoEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453167822602768539') || '🪙';
+
     // Create the main ticket panel embed
     const embed = new EmbedBuilder()
       .setColor('#1db954')
@@ -15,10 +21,10 @@ export default {
       .setDescription(
         'Please submit a ticket for any questions or concerns you may have. You can also use the ticket system to purchase any of Hanzo\'s Products. We appreciate your interest and look forward to assisting you promptly.\n\n' +
         '━━━ 💳 Payment Methods ━━━\n\n' +
-        '> <:creditcard:1425047539794706492> (Credit/Debit Cards)\n' +
-        '> <:PayPal:1453167921655320650> (Paypal, Friends & Family)\n' +
-        '> <:CASHAPP:1425978464372133888> (Cashapp)\n' +
-        '> <:CRYPTO:1453167822602768539> (Cryptocurrencies, BTC, ETH, LTC & More)\n\n' +
+        `> ${creditCardEmoji} (Credit/Debit Cards)\n` +
+        `> ${paypalEmoji} (Paypal, Friends & Family)\n` +
+        `> ${cashappEmoji} (Cashapp)\n` +
+        `> ${cryptoEmoji} (Cryptocurrencies, BTC, ETH, LTC & More)\n\n` +
         '⚡ https://hanzocheats.com/ ⚡'
       )
       .setThumbnail('https://www.hanzocheats.com/assets/hanzo-logo-DQM325gV.png')
