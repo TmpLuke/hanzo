@@ -21,7 +21,6 @@ export default {
         '> 🪙 (Cryptocurrencies, BTC, ETH, LTC & More)\n\n' +
         '⚡ https://hanzocheats.com/ ⚡'
       )
-      .setImage('PLACEHOLDER_BANNER_IMAGE_URL') // Replace with your banner
       .setThumbnail('https://www.hanzocheats.com/assets/hanzo-logo-DQM325gV.png')
       .setFooter({ text: 'Hanzo | Hanzocheats.com' })
       .setTimestamp();
