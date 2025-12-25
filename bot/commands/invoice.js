@@ -121,7 +121,7 @@ export default {
           { name: '🆔 Transaction ID', value: order.payment_id ? `\`${order.payment_id.substring(0, 20)}...\`` : 'N/A', inline: true },
           { name: '\u200B', value: '\u200B', inline: true }
         )
-        .setThumbnail('https://i.imgur.com/YourHanzoLogo.png') // Replace with your Hanzo logo
+        .setThumbnail('https://www.hanzocheats.com/assets/hanzo-logo-DQM325gV.png')
         .setFooter({ text: 'Hanzo Marketplace • Invoice System' })
         .setTimestamp();
 

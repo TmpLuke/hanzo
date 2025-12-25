@@ -18,13 +18,13 @@ export default {
         '🔧 You can automatically obtain the **Customer** role and access to the Customer section by utilizing the button below.\n\n' +
         '👇 Simply click **Customer Role** and enter your Order ID.'
       )
-      .setThumbnail('https://i.imgur.com/YourHanzoLogo.png') // Replace with your actual Hanzo logo URL
+      .setThumbnail('https://www.hanzocheats.com/assets/hanzo-logo-DQM325gV.png')
       .setFooter({ text: 'Hanzo Marketplace • Secure Redemption' })
       .setTimestamp();
 
     const button = new ButtonBuilder()
       .setCustomId('redeem_button')
-      .setLabel('📦 Customer Role')
+      .setLabel('Customer Role')
       .setStyle(ButtonStyle.Primary)
       .setEmoji('📦');
 
