@@ -104,7 +104,7 @@ export default {
           label: 'Dune Awakening',
           description: 'Get alerts for Dune Awakening updates',
           value: 'dune',
-          emoji: '�sa'
+          emoji: '🏜️'
         },
         {
           label: 'Battlefield',
