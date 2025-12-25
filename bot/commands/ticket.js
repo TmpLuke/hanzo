@@ -9,10 +9,13 @@ export default {
 
   async execute(interaction) {
     // Fetch emojis from the guild
-    const creditCardEmoji = interaction.guild.emojis.cache.find(e => e.id === '1425047539794706492') || '💳';
-    const paypalEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453167921655320650') || '💙';
-    const cashappEmoji = interaction.guild.emojis.cache.find(e => e.id === '1425978464372133888') || '💚';
-    const cryptoEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453167822602768539') || '🪙';
+    const cartEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453863295084658751') || '🛒';
+    const supportEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453863878101565582') || '👤';
+    const resetEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453864082611503105') || '🔄';
+    const claimEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453864437823045774') || '⭐';
+    const cashappEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453863389641183384') || '💚';
+    const paypalEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453863410088542271') || '💙';
+    const cryptoEmoji = interaction.guild.emojis.cache.find(e => e.id === '1453863730306613340') || '🪙';
 
     // Create the main ticket panel embed
     const embed = new EmbedBuilder()
@@ -21,7 +24,7 @@ export default {
       .setDescription(
         'Please submit a ticket for any questions or concerns you may have. You can also use the ticket system to purchase any of Hanzo\'s Products. We appreciate your interest and look forward to assisting you promptly.\n\n' +
         '━━━ 💳 Payment Methods ━━━\n\n' +
-        `> ${creditCardEmoji} (Credit/Debit Cards)\n` +
+        `> 💳 (Credit/Debit Cards)\n` +
         `> ${paypalEmoji} (Paypal, Friends & Family)\n` +
         `> ${cashappEmoji} (Cashapp)\n` +
         `> ${cryptoEmoji} (Cryptocurrencies, BTC, ETH, LTC & More)\n\n` +
@@ -40,25 +43,25 @@ export default {
           label: 'Purchase',
           description: 'Click on this option to purchase a product!',
           value: 'purchase',
-          emoji: '🛒'
+          emoji: cartEmoji.id ? { id: cartEmoji.id, name: cartEmoji.name } : '🛒'
         },
         {
           label: 'Support',
           description: 'Click on this option if you require support!',
           value: 'support',
-          emoji: '👤'
+          emoji: supportEmoji.id ? { id: supportEmoji.id, name: supportEmoji.name } : '👤'
         },
         {
           label: 'License Key HWID Reset',
           description: 'Click on this option if you need a Key Reset!',
           value: 'hwid_reset',
-          emoji: '🛒'
+          emoji: resetEmoji.id ? { id: resetEmoji.id, name: resetEmoji.name } : '🔄'
         },
         {
           label: 'Claim Role / Key',
           description: 'Click here to claim your customer role!',
           value: 'claim_role',
-          emoji: '⭐'
+          emoji: claimEmoji.id ? { id: claimEmoji.id, name: claimEmoji.name } : '⭐'
         }
       ]);
 
