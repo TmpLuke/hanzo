@@ -5,6 +5,22 @@ import { generateTranscript } from './transcriptGenerator.js';
 
 const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
+// Helper function to check if a channel is a ticket
+export async function isTicketChannel(channelId) {
+  try {
+    const { data, error } = await supabase
+      .from('tickets')
+      .select('id')
+      .eq('channel_id', channelId)
+      .eq('status', 'open')
+      .single();
+    
+    return !error && data !== null;
+  } catch {
+    return false;
+  }
+}
+
 // Ticket configuration - reads from environment variables
 const TICKET_CONFIG = {
   purchase: {
@@ -201,8 +217,8 @@ async function createTicketChannel(interaction, ticketType) {
     .single();
   
   const ticketNumber = (lastTicket?.ticket_number || 0) + 1;
-  const paddedNumber = String(ticketNumber).padStart(4, '0');
-  const channelName = `ticket-${paddedNumber}`;
+  const username = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const channelName = `${username}-${ticketNumber}`;
 
   const channel = await interaction.guild.channels.create({
     name: channelName,
@@ -308,8 +324,10 @@ async function storeTicket(channelId, userId, ticketType, ticketNumber) {
 }
 
 export async function handleCloseTicket(interaction) {
-  // Check if in a ticket channel
-  if (!interaction.channel.name.startsWith('ticket-')) {
+  // Check if in a ticket channel by checking database
+  const isTicket = await isTicketChannel(interaction.channel.id);
+  
+  if (!isTicket) {
     const embed = new EmbedBuilder()
       .setColor('#ef4444')
       .setTitle('❌ Not a Ticket')
