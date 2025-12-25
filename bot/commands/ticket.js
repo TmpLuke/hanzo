@@ -15,10 +15,10 @@ export default {
       .setDescription(
         'Please submit a ticket for any questions or concerns you may have. You can also use the ticket system to purchase any of Hanzo\'s Products. We appreciate your interest and look forward to assisting you promptly.\n\n' +
         '━━━ 💳 Payment Methods ━━━\n\n' +
-        '> 🔴 (Credit/Debit Cards)\n' +
-        '> 💙 (Paypal, Friends & Family)\n' +
-        '> 💚 (Cashapp)\n' +
-        '> 🪙 (Cryptocurrencies, BTC, ETH, LTC & More)\n\n' +
+        '> <:creditcard:1425047539794706492> (Credit/Debit Cards)\n' +
+        '> <:PayPal:1453167921655320650> (Paypal, Friends & Family)\n' +
+        '> <:CASHAPP:1425978464372133888> (Cashapp)\n' +
+        '> <:CRYPTO:1453167822602768539> (Cryptocurrencies, BTC, ETH, LTC & More)\n\n' +
         '⚡ https://hanzocheats.com/ ⚡'
       )
       .setThumbnail('https://www.hanzocheats.com/assets/hanzo-logo-DQM325gV.png')
