@@ -139,8 +139,18 @@ export default function ProductsPage() {
       .select("*")
       .order("display_order", { ascending: true });
     
-    if (!error && data) {
+    if (!error && data && data.length > 0) {
       setCategories(data);
+    } else {
+      // Fallback to default categories if table is empty or doesn't exist
+      setCategories([
+        { id: '1', slug: 'aimbots', name: 'Aimbots', display_order: 1 },
+        { id: '2', slug: 'esp', name: 'ESP', display_order: 2 },
+        { id: '3', slug: 'radar', name: 'Radar', display_order: 3 },
+        { id: '4', slug: 'spoofers', name: 'Spoofers', display_order: 4 },
+        { id: '5', slug: 'unlocks', name: 'Unlocks', display_order: 5 },
+        { id: '6', slug: 'bundles', name: 'Bundles', display_order: 6 },
+      ]);
     }
   };
 
