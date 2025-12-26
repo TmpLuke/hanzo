@@ -16,6 +16,7 @@ import ProductsPage from "./ProductsPage";
 import CategoriesPage from "./CategoriesPage";
 import CouponsPage from "./CouponsPage";
 import LicensesPage from "./LicensesPage";
+import LicenseKeysPage from "./LicenseKeysPage";
 import SettingsPage from "./SettingsPage";
 
 const sidebarItems = [
@@ -24,7 +25,7 @@ const sidebarItems = [
   { icon: Package, label: "Products", path: "/admin/products" },
   { icon: Package, label: "Categories", path: "/admin/categories" },
   { icon: Ticket, label: "Coupons", path: "/admin/coupons" },
-  { icon: Key, label: "Licenses", path: "/admin/licenses" },
+  { icon: Key, label: "License Keys", path: "/admin/license-keys" },
   { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
@@ -171,6 +172,7 @@ export default function AdminDashboard() {
             <Route path="categories" element={<CategoriesPage />} />
             <Route path="coupons" element={<CouponsPage />} />
             <Route path="licenses" element={<LicensesPage />} />
+            <Route path="license-keys" element={<LicenseKeysPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Routes>
         </main>

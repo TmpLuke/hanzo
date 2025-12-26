@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply Categories Migration</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: system-ui; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #059669; }
+        .log { background: #1f2937; color: #10b981; padding: 20px; border-radius: 8px; margin-top: 20px; font-family: monospace; white-space: pre-wrap; }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
+    </style>
+</head>
+<body>
+    <h1>Apply Categories Migration</h1>
+    <p>This will create the categories table in your Supabase database.</p>
+    <button onclick="applyMigration()">Apply Migration</button>
+    <div id="log" class="log"></div>
+
+    <script>
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        function log(message, isError = false) {
+            const logEl = document.getElementById('log');
+            const className = isError ? 'error' : 'success';
+            logEl.innerHTML += `<span class="${className}">${message}</span>\n`;
+        }
+        
+        async function applyMigration() {
+            document.getElementById('log').innerHTML = '';
+            log('Starting migration...');
+            
+            try {
+                // Create categories table
+                log('Creating categories table...');
+                const { error: createError } = await supabase.rpc('exec_sql', {
+                    sql_query: `
+                        CREATE TABLE IF NOT EXISTS categories (
+                          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                          name TEXT NOT NULL UNIQUE,
+                          slug TEXT NOT NULL UNIQUE,
+                          description TEXT,
+                          display_order INTEGER DEFAULT 0,
+                          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                        );
+                    `
+                });
+                
+                if (createError) {
+                    log('Error creating table: ' + createError.message, true);
+                    log('\\nPlease run this SQL manually in Supabase SQL Editor:', true);
+                    log(document.querySelector('script[type="text/sql"]').textContent);
+                    return;
+                }
+                
+                log('✓ Table created');
+                
+                // Insert default categories
+                log('Inserting default categories...');
+                const categories = [
+                    { name: 'Aimbots', slug: 'aimbots', description: 'Precision targeting tools', display_order: 1 },
+                    { name: 'ESP', slug: 'esp', description: 'Enhanced visual information', display_order: 2 },
+                    { name: 'Radar', slug: 'radar', description: 'Advanced detection systems', display_order: 3 },
+                    { name: 'Spoofers', slug: 'spoofers', description: 'Hardware ID protection', display_order: 4 },
+                    { name: 'Unlocks', slug: 'unlocks', description: 'Game content unlocks', display_order: 5 },
+                    { name: 'Bundles', slug: 'bundles', description: 'Package deals', display_order: 6 }
+                ];
+                
+                for (const cat of categories) {
+                    const { error } = await supabase
+                        .from('categories')
+                        .upsert(cat, { onConflict: 'slug' });
+                    
+                    if (error) {
+                        log(`Error inserting ${cat.name}: ${error.message}`, true);
+                    } else {
+                        log(`✓ Inserted ${cat.name}`);
+                    }
+                }
+                
+                log('\\n✓ Migration completed successfully!');
+                log('You can now manage categories in the admin dashboard.');
+                
+            } catch (err) {
+                log('Error: ' + err.message, true);
+            }
+        }
+    </script>
+    
+    <script type="text/sql">
+-- Create categories table
+CREATE TABLE IF NOT EXISTS categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT,
+  display_order INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Insert default categories
+INSERT INTO categories (name, slug, description, display_order) VALUES
+  ('Aimbots', 'aimbots', 'Precision targeting tools', 1),
+  ('ESP', 'esp', 'Enhanced visual information', 2),
+  ('Radar', 'radar', 'Advanced detection systems', 3),
+  ('Spoofers', 'spoofers', 'Hardware ID protection', 4),
+  ('Unlocks', 'unlocks', 'Game content unlocks', 5),
+  ('Bundles', 'bundles', 'Package deals', 6)
+ON CONFLICT (slug) DO NOTHING;
+
+-- Add indexes
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
+CREATE INDEX IF NOT EXISTS idx_categories_display_order ON categories(display_order);
+    </script>
+</body>
+</html>
