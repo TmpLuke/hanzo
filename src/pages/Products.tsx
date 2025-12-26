@@ -6,6 +6,7 @@ import { fetchProducts, Product } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconSearch, IconX } from "@/components/icons/HanzoIcons";
+import { Grid3X3 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -13,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
 
 const sortOptions = [
   { value: "popular", label: "Most Popular" },
@@ -25,31 +27,60 @@ const sortOptions = [
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");
   const [sortBy, setSortBy] = useState("popular");
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
-      const data = await fetchProducts();
-      setProducts(data);
-      setLoading(false);
-    };
-    loadProducts();
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    
+    // Load products
+    const productsData = await fetchProducts();
+    setProducts(productsData);
+    
+    // Load categories from database
+    const { data: categoriesData } = await supabase
+      .from("categories" as any)
+      .select("*")
+      .order("display_order");
+    
+    if (categoriesData && categoriesData.length > 0) {
+      setCategories(categoriesData);
+    } else {
+      // Fallback categories
+      setCategories([
+        { slug: 'aimbots', name: 'Aimbots' },
+        { slug: 'esp', name: 'ESP' },
+        { slug: 'radar', name: 'Radar' },
+        { slug: 'spoofers', name: 'Spoofers' },
+        { slug: 'unlocks', name: 'Unlocks' },
+        { slug: 'bundles', name: 'Bundles' },
+      ]);
+    }
+    
+    setLoading(false);
+  };
 
   useEffect(() => {
     const q = searchParams.get("q") || "";
-    const cat = searchParams.get("category");
+    const cat = searchParams.get("category") || "all";
     if (q !== searchQuery) setSearchQuery(q);
-    if (cat) {
-      // Optional: adjust sort if category is specified
-    }
+    if (cat !== selectedCategory) setSelectedCategory(cat);
   }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
+
+    // Filter by category
+    if (selectedCategory && selectedCategory !== "all") {
+      result = result.filter(p => p.category === selectedCategory);
+    }
 
     // Filter by search
     if (searchQuery) {
@@ -80,11 +111,23 @@ export default function ProductsPage() {
     }
 
     return result;
-  }, [products, searchQuery, sortBy]);
+  }, [products, searchQuery, sortBy, selectedCategory]);
+
+  const handleCategoryClick = (slug: string) => {
+    setSelectedCategory(slug);
+    const next = new URLSearchParams(searchParams);
+    if (slug === "all") {
+      next.delete("category");
+    } else {
+      next.set("category", slug);
+    }
+    setSearchParams(next);
+  };
 
   const clearFilters = () => {
     setSearchParams({});
     setSearchQuery("");
+    setSelectedCategory("all");
     setSortBy("popular");
   };
 
@@ -111,6 +154,36 @@ export default function ProductsPage() {
         </div>
 
         <div className="container mx-auto px-4">
+          {/* Category Filter Buttons */}
+          <div className="flex flex-wrap gap-3 mb-8 justify-center">
+            <Button
+              onClick={() => handleCategoryClick("all")}
+              variant={selectedCategory === "all" ? "default" : "outline"}
+              className={`rounded-full px-6 transition-all ${
+                selectedCategory === "all"
+                  ? "bg-primary text-black hover:bg-primary/90"
+                  : "border-border/50 hover:border-primary/50"
+              }`}
+            >
+              <Grid3X3 className="w-4 h-4 mr-2" />
+              All Products
+            </Button>
+            {categories.map((cat) => (
+              <Button
+                key={cat.slug}
+                onClick={() => handleCategoryClick(cat.slug)}
+                variant={selectedCategory === cat.slug ? "default" : "outline"}
+                className={`rounded-full px-6 transition-all ${
+                  selectedCategory === cat.slug
+                    ? "bg-primary text-black hover:bg-primary/90"
+                    : "border-border/50 hover:border-primary/50"
+                }`}
+              >
+                {cat.name}
+              </Button>
+            ))}
+          </div>
+
           {/* Filters Bar */}
           <div className="flex flex-col lg:flex-row gap-4 mb-10 p-6 rounded-2xl bg-card/50 border border-border/50 backdrop-blur-sm">
             {/* Search */}
@@ -151,7 +224,7 @@ export default function ProductsPage() {
               </div>
               
               {/* Clear Filters */}
-              {searchQuery && (
+              {(searchQuery || selectedCategory !== "all") && (
                 <Button variant="ghost" size="sm" onClick={clearFilters} className="rounded-xl">
                   <IconX className="w-4 h-4 mr-1" />
                   Clear
