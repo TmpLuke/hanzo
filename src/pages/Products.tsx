@@ -90,21 +90,32 @@ export default function ProductsPage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen pt-8 pb-16">
-        <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-display font-bold mb-2">All Products</h1>
-            <p className="text-muted-foreground">
-              {filteredProducts.length} products available
+      <div className="min-h-screen pt-12 pb-20">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden mb-16">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]" />
+          
+          <div className="container mx-auto px-4 relative z-10 text-center py-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 animate-fade-in">
+              <span className="text-sm text-primary font-medium">Premium Collection</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 animate-slide-up">
+              <span className="text-gradient">All Products</span>
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.1s" }}>
+              Discover our complete collection of premium gaming tools
             </p>
           </div>
+        </div>
 
+        <div className="container mx-auto px-4">
           {/* Filters Bar */}
-          <div className="flex flex-col lg:flex-row gap-4 mb-8">
+          <div className="flex flex-col lg:flex-row gap-4 mb-10 p-6 rounded-2xl bg-card/50 border border-border/50 backdrop-blur-sm">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <IconSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 placeholder="Search products..."
                 value={searchQuery}
@@ -115,16 +126,16 @@ export default function ProductsPage() {
                   if (v) next.set("q", v); else next.delete("q");
                   setSearchParams(next);
                 }}
-                className="pl-10 bg-card border-border"
+                className="pl-12 h-12 bg-background/50 border-border/50 rounded-xl focus:border-primary/50 transition-all"
               />
             </div>
 
             {/* Sort */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48 bg-card border-border">
+              <SelectTrigger className="w-full lg:w-56 h-12 bg-background/50 border-border/50 rounded-xl">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-card/95 backdrop-blur-xl border-border/50">
                 {sortOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -133,43 +144,60 @@ export default function ProductsPage() {
               </SelectContent>
             </Select>
 
-            {/* Clear Filters */}
-            {searchQuery && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                <IconX className="w-4 h-4 mr-1" />
-                Clear
-              </Button>
-            )}
+            {/* Results count */}
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-muted-foreground whitespace-nowrap">
+                <span className="font-semibold text-foreground">{filteredProducts.length}</span> products
+              </div>
+              
+              {/* Clear Filters */}
+              {searchQuery && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="rounded-xl">
+                  <IconX className="w-4 h-4 mr-1" />
+                  Clear
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Products Grid */}
           {loading ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="rounded-xl bg-card border border-border animate-pulse">
-                  <div className="aspect-[4/3] bg-muted" />
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-muted rounded w-3/4" />
-                    <div className="h-3 bg-muted rounded w-full" />
-                    <div className="h-6 bg-muted rounded w-1/2" />
+                <div key={i} className="rounded-3xl bg-card/50 border border-border/50 animate-pulse overflow-hidden">
+                  <div className="aspect-[4/3] bg-muted/30" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-5 bg-muted/30 rounded-lg w-3/4" />
+                    <div className="h-4 bg-muted/20 rounded-lg w-full" />
+                    <div className="h-8 bg-muted/30 rounded-lg w-1/2 mt-4" />
                   </div>
                 </div>
               ))}
             </div>
           ) : filteredProducts.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {filteredProducts.map((product, idx) => (
+                <div
+                  key={product.id}
+                  className="animate-scale-in"
+                  style={{ animationDelay: `${(idx % 8) * 0.05}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold mb-2">No products found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your search or filters
+            <div className="text-center py-20">
+              <div className="w-24 h-24 rounded-3xl bg-muted/30 flex items-center justify-center mx-auto mb-6">
+                <IconSearch className="w-12 h-12 text-muted-foreground/50" />
+              </div>
+              <h3 className="text-2xl font-bold mb-3">No products found</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                We couldn't find any products matching your search. Try different keywords or clear your filters.
               </p>
-              <Button onClick={clearFilters}>Clear Filters</Button>
+              <Button onClick={clearFilters} size="lg" className="rounded-xl">
+                Clear Filters
+              </Button>
             </div>
           )}
         </div>
