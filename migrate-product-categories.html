@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Migrate Product Categories</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: system-ui; max-width: 900px; margin: 50px auto; padding: 20px; background: #0a0a0a; color: #fff; }
+        button { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        button:hover { background: #059669; }
+        button.secondary { background: #3b82f6; }
+        button.secondary:hover { background: #2563eb; }
+        .log { background: #1f2937; color: #10b981; padding: 20px; border-radius: 8px; margin-top: 20px; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
+        .warning { color: #f59e0b; }
+        input { background: #1f2937; border: 1px solid #374151; color: #fff; padding: 8px 12px; border-radius: 6px; width: 100%; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Migrate Product Categories</h1>
+    <p>This will update your existing products to use the new category system.</p>
+    
+    <div style="margin-bottom: 20px;">
+        <label>Supabase URL:</label>
+        <input type="text" id="supabaseUrl" placeholder="https://xxx.supabase.co" />
+        
+        <label>Supabase Anon Key:</label>
+        <input type="password" id="supabaseKey" placeholder="Your anon key" />
+    </div>
+    
+    <button onclick="checkStatus()">Check Current Status</button>
+    <button onclick="migrateCategories()" class="secondary">Migrate Categories</button>
+    <div id="log" class="log"></div>
+
+    <script>
+        let supabase = null;
+        
+        function log(message, type = 'success') {
+            const logEl = document.getElementById('log');
+            const className = type;
+            logEl.innerHTML += `<span class="${className}">${message}</span>\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        function initSupabase() {
+            const url = document.getElementById('supabaseUrl').value;
+            const key = document.getElementById('supabaseKey').value;
+            
+            if (!url || !key) {
+                alert('Please enter both Supabase URL and Key');
+                return false;
+            }
+            
+            supabase = window.supabase.createClient(url, key);
+            return true;
+        }
+        
+        async function checkStatus() {
+            if (!initSupabase()) return;
+            
+            document.getElementById('log').innerHTML = '';
+            log('Checking current status...');
+            
+            try {
+                // Check categories
+                const { data: categories, error: catError } = await supabase
+                    .from('categories')
+                    .select('*')
+                    .order('display_order');
+                
+                if (catError) {
+                    log('Error fetching categories: ' + catError.message, 'error');
+                    log('Please run the categories migration first!', 'error');
+                    return;
+                }
+                
+                log(`\n✓ Found ${categories.length} categories:`, 'success');
+                categories.forEach(cat => {
+                    log(`  - ${cat.name} (slug: ${cat.slug})`, 'success');
+                });
+                
+                // Check products
+                const { data: products, error: prodError } = await supabase
+                    .from('products')
+                    .select('id, name, category');
+                
+                if (prodError) {
+                    log('\nError fetching products: ' + prodError.message, 'error');
+                    return;
+                }
+                
+                log(`\n✓ Found ${products.length} products`, 'success');
+                
+                // Check which products need migration
+                const categoryMap = {};
+                categories.forEach(cat => {
+                    categoryMap[cat.slug] = cat.name;
+                });
+                
+                let needsMigration = 0;
+                let alreadyMigrated = 0;
+                
+                products.forEach(prod => {
+                    if (categoryMap[prod.category]) {
+                        alreadyMigrated++;
+                    } else {
+                        needsMigration++;
+                        log(`  ⚠ ${prod.name}: category="${prod.category}" (needs update)`, 'warning');
+                    }
+                });
+                
+                log(`\n${alreadyMigrated} products already using new categories`, 'success');
+                log(`${needsMigration} products need migration`, needsMigration > 0 ? 'warning' : 'success');
+                
+                if (needsMigration > 0) {
+                    log('\nClick "Migrate Categories" to update them.', 'warning');
+                }
+                
+            } catch (err) {
+                log('Error: ' + err.message, 'error');
+            }
+        }
+        
+        async function migrateCategories() {
+            if (!initSupabase()) return;
+            
+            if (!confirm('This will update all products to use the new category system. Continue?')) {
+                return;
+            }
+            
+            document.getElementById('log').innerHTML = '';
+            log('Starting migration...');
+            
+            try {
+                // Get all categories
+                const { data: categories, error: catError } = await supabase
+                    .from('categories')
+                    .select('*');
+                
+                if (catError || !categories || categories.length === 0) {
+                    log('Error: No categories found. Please run the categories migration first!', 'error');
+                    return;
+                }
+                
+                // Create mapping of old category names to new slugs
+                const categoryMapping = {
+                    'aimbots': 'aimbots',
+                    'esp': 'esp',
+                    'radar': 'radar',
+                    'spoofers': 'spoofers',
+                    'unlocks': 'unlocks',
+                    'bundles': 'bundles',
+                    // Add any other old category names you might have
+                };
+                
+                // Get all products
+                const { data: products, error: prodError } = await supabase
+                    .from('products')
+                    .select('*');
+                
+                if (prodError) {
+                    log('Error fetching products: ' + prodError.message, 'error');
+                    return;
+                }
+                
+                log(`Found ${products.length} products to check\n`);
+                
+                let updated = 0;
+                let skipped = 0;
+                
+                for (const product of products) {
+                    const oldCategory = product.category;
+                    const newSlug = categoryMapping[oldCategory.toLowerCase()];
+                    
+                    if (!newSlug) {
+                        log(`⚠ Skipping ${product.name}: unknown category "${oldCategory}"`, 'warning');
+                        skipped++;
+                        continue;
+                    }
+                    
+                    // Check if category exists in database
+                    const categoryExists = categories.find(c => c.slug === newSlug);
+                    if (!categoryExists) {
+                        log(`⚠ Skipping ${product.name}: category slug "${newSlug}" not found in database`, 'warning');
+                        skipped++;
+                        continue;
+                    }
+                    
+                    // Update product
+                    const { error: updateError } = await supabase
+                        .from('products')
+                        .update({ category: newSlug })
+                        .eq('id', product.id);
+                    
+                    if (updateError) {
+                        log(`✗ Failed to update ${product.name}: ${updateError.message}`, 'error');
+                    } else {
+                        log(`✓ Updated ${product.name}: "${oldCategory}" → "${newSlug}"`, 'success');
+                        updated++;
+                    }
+                }
+                
+                log(`\n✓ Migration complete!`, 'success');
+                log(`  ${updated} products updated`, 'success');
+                log(`  ${skipped} products skipped`, skipped > 0 ? 'warning' : 'success');
+                log('\nYou can now manage categories in the admin dashboard!', 'success');
+                
+            } catch (err) {
+                log('Error: ' + err.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
