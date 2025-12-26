@@ -19,60 +19,85 @@ let cachedProducts: Product[] = [];
 // Hero Section - matching visuals.gg style
 function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
-      {/* Background with dots pattern */}
-      <div className="absolute inset-0 bg-background" />
+    <section className="relative min-h-[95vh] flex flex-col items-center justify-center overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-card/30" />
+      
+      {/* Animated grid pattern */}
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-[0.15]"
         style={{
-          backgroundImage: `radial-gradient(circle, hsl(var(--muted-foreground) / 0.3) 1px, transparent 1px)`,
-          backgroundSize: "30px 30px",
+          backgroundImage: `
+            linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(var(--primary) / 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
         }}
       />
 
-      {/* Gradient glow behind text */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-[120px]" />
+      {/* Large glowing orb */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-primary/5 rounded-full blur-[150px] animate-glow-pulse" />
+      
+      {/* Smaller accent orbs */}
+      <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '3s' }} />
+      <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
 
       <div className="container mx-auto px-4 relative z-10 text-center">
-        {/* Trust Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-10 animate-fade-in">
+        {/* Trust Badge with glow */}
+        <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 border border-primary/30 mb-12 animate-fade-in backdrop-blur-sm shadow-lg shadow-primary/20">
           <IconCheck className="w-4 h-4 text-primary" />
-          <span className="text-sm text-muted-foreground">
-            Trusted by <span className="text-primary font-semibold">50,000+</span> Satisfied Customers →
+          <span className="text-sm text-foreground font-medium">
+            Trusted by <span className="text-primary font-bold">50,000+</span> Gamers Worldwide
           </span>
         </div>
 
-        {/* Main Heading */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-6 animate-slide-up">
+        {/* Main Heading with better gradient */}
+        <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-display font-bold leading-[1.05] mb-8 animate-slide-up">
           <span className="text-foreground">Unleash Your Power</span>
           <br />
-          <span className="text-gradient">Dominate The Game</span>
+          <span className="text-gradient inline-block mt-2">Dominate The Game</span>
         </h1>
 
-        {/* Subtext */}
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+        {/* Subtext with better spacing */}
+        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-slide-up leading-relaxed" style={{ animationDelay: "0.1s" }}>
           Take your gaming to the next level with our premium cheats, designed to redefine how you play and dominate every match.
         </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+        {/* CTA Buttons with enhanced styling */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-slide-up" style={{ animationDelay: "0.2s" }}>
           <Link to="/products">
-            <Button variant="hero" size="lg" className="gap-2 px-8">
-              <Grid3X3 className="w-5 h-5" />
-              Products
+            <Button variant="hero" size="lg" className="gap-2 px-10 py-7 text-lg font-bold rounded-2xl shadow-2xl shadow-primary/30 hover:shadow-primary/50 transition-all duration-300 hover:scale-105">
+              <Grid3X3 className="w-6 h-6" />
+              Browse Products
             </Button>
           </Link>
           <Link to="/status">
-            <Button variant="outline" size="lg" className="gap-2 px-8">
-              <Activity className="w-5 h-5" />
+            <Button variant="outline" size="lg" className="gap-2 px-10 py-7 text-lg font-semibold rounded-2xl border-2 hover:bg-card/50 backdrop-blur-sm">
+              <Activity className="w-6 h-6" />
               View Status
             </Button>
           </Link>
         </div>
 
+        {/* Feature pills */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-16 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-sm">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-sm text-muted-foreground">Instant Delivery</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-sm">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-sm text-muted-foreground">24/7 Support</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-sm">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-sm text-muted-foreground">Regular Updates</span>
+          </div>
+        </div>
+
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-muted-foreground" />
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+          <ChevronDown className="w-7 h-7 text-primary/60" />
         </div>
       </div>
     </section>
@@ -138,51 +163,59 @@ function ProductCardVisuals({ product }: { product: Product }) {
   };
   return (
     <div
-      className="group relative bg-card rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
+      className="group relative bg-gradient-to-br from-card to-card/50 rounded-3xl border border-border/50 overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 cursor-pointer hover:-translate-y-1"
       onClick={() => navigate(`/product/${product.id}`)}
     >
+      {/* Glow effect on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
       {/* Product Image */}
-      <div className="aspect-[4/3] overflow-hidden bg-muted/50">
+      <div className="aspect-[4/3] overflow-hidden bg-muted/30 relative">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-lg font-semibold text-foreground">{product.name}</h3>
-          {product.badge && (
-            <Badge variant="secondary" className="bg-muted text-xs font-medium">
-              {product.category.toUpperCase()}
-            </Badge>
-          )}
+      <div className="p-6 relative z-10">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-foreground mb-1 truncate group-hover:text-primary transition-colors">{product.name}</h3>
+            {product.badge && (
+              <Badge variant="secondary" className="bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                {product.category.toUpperCase()}
+              </Badge>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3">
-          <Button
-            variant="outline"
-            className="gap-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/product/${product.id}`);
-            }}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Buy Now
-          </Button>
-          <Button
-            onClick={handleAddToCart}
-            variant="outline"
-            size="icon"
-            className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl border-2 border-primary/30 hover:bg-primary/20 hover:border-primary"
-          >
-            <ShoppingCart className="w-5 h-5" />
-          </Button>
+        <div className="flex items-center justify-between gap-3 mt-6">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 rounded-xl border-2 hover:bg-primary/10 hover:border-primary transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/product/${product.id}`);
+              }}
+            >
+              View Details
+            </Button>
+            <Button
+              onClick={handleAddToCart}
+              size="icon"
+              className="h-9 w-9 rounded-xl bg-primary/10 hover:bg-primary hover:text-black border-2 border-primary/30 hover:border-primary transition-all"
+            >
+              <ShoppingCart className="w-4 h-4" />
+            </Button>
+          </div>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Starting at</div>
+            <div className="text-xs text-muted-foreground font-medium mb-0.5">From</div>
             <div className="text-2xl font-bold text-primary">${product.price}</div>
           </div>
         </div>
