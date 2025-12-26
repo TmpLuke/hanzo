@@ -31,6 +31,7 @@ export default function ProductDetail() {
   const [checkoutDialogOpen, setCheckoutDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [customerName, setCustomerName] = useState("");
+  const [couponCode, setCouponCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -134,6 +135,7 @@ export default function ProductDetail() {
         priceCents: Math.round(selectedVariant.price * 100),
         email,
         customerName: customerName || undefined,
+        couponCode: couponCode || undefined,
       });
 
       if (result.success && result.checkoutUrl) {
@@ -448,6 +450,18 @@ export default function ProductDetail() {
                 placeholder="John Doe"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
+                disabled={isProcessing}
+                className="h-12 rounded-xl"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="coupon">Coupon Code (Optional)</Label>
+              <Input
+                id="coupon"
+                type="text"
+                placeholder="Enter coupon code"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                 disabled={isProcessing}
                 className="h-12 rounded-xl"
               />
