@@ -374,6 +374,30 @@ export default function ProductsPage() {
     }
   };
 
+  const deleteVariant = async (variantId: string) => {
+    if (!confirm('Are you sure you want to delete this variant?')) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("product_variants" as any)
+      .delete()
+      .eq("id", variantId);
+
+    if (error) {
+      toast.error("Failed to delete variant");
+      console.error(error);
+    } else {
+      toast.success("Variant deleted!");
+      // Refresh variants
+      if (selectedProductForVariants) {
+        handleManageVariants(selectedProductForVariants);
+      }
+      // Refresh products to update variant count
+      fetchProducts();
+    }
+  };
+
   const getStatusBadge = (status: ProductStatus) => {
     const config = statusConfig[status];
     const Icon = config.icon;
@@ -1099,6 +1123,15 @@ export default function ProductsPage() {
                     }}
                     className="w-24 bg-background border-border/50 focus:border-primary/50"
                   />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => deleteVariant(variant.id)}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    title="Delete variant"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             ))}
