@@ -97,6 +97,7 @@ const statusConfig = {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -129,7 +130,19 @@ export default function ProductsPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase
+      .from("categories" as any)
+      .select("*")
+      .order("display_order", { ascending: true });
+    
+    if (!error && data) {
+      setCategories(data);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -409,14 +422,9 @@ export default function ProductsPage() {
     );
   };
 
-  const categories = [
+  const categoryOptions = [
     { value: "all", label: "All Categories" },
-    { value: "aimbots", label: "Aimbots" },
-    { value: "esp", label: "ESP" },
-    { value: "radar", label: "Radar" },
-    { value: "spoofers", label: "Spoofers" },
-    { value: "unlocks", label: "Unlocks" },
-    { value: "bundles", label: "Bundles" },
+    ...categories.map(cat => ({ value: cat.slug, label: cat.name }))
   ];
 
   return (
@@ -456,7 +464,7 @@ export default function ProductsPage() {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-card/95 backdrop-blur-xl border-border/50">
-            {categories.map((cat) => (
+            {categoryOptions.map((cat) => (
               <SelectItem key={cat.value} value={cat.value} className="hover:bg-primary/10 focus:bg-primary/10">
                 {cat.label}
               </SelectItem>
@@ -785,8 +793,8 @@ export default function ProductsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card/95 backdrop-blur-xl border-border/50">
-                    {categories.slice(1).map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.slug} value={cat.slug}>{cat.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

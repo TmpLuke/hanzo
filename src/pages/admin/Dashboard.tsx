@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import DashboardHome from "./DashboardHome";
 import OrdersPage from "./OrdersPage";
 import ProductsPage from "./ProductsPage";
+import CategoriesPage from "./CategoriesPage";
 import CouponsPage from "./CouponsPage";
 import LicensesPage from "./LicensesPage";
 import SettingsPage from "./SettingsPage";
@@ -21,6 +22,7 @@ const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
   { icon: ShoppingCart, label: "Orders", path: "/admin/orders" },
   { icon: Package, label: "Products", path: "/admin/products" },
+  { icon: Package, label: "Categories", path: "/admin/categories" },
   { icon: Ticket, label: "Coupons", path: "/admin/coupons" },
   { icon: Key, label: "Licenses", path: "/admin/licenses" },
   { icon: Settings, label: "Settings", path: "/admin/settings" },
@@ -166,6 +168,7 @@ export default function AdminDashboard() {
             <Route index element={<DashboardHome />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
             <Route path="coupons" element={<CouponsPage />} />
             <Route path="licenses" element={<LicensesPage />} />
             <Route path="settings" element={<SettingsPage />} />
