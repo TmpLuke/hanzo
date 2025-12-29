@@ -112,6 +112,26 @@ export async function createMoneyMotionCheckout(data: CheckoutData) {
 
 export async function createCartCheckout(data: CartCheckoutData) {
   try {
+    // 0. Idempotency: reuse recent pending session for this email to avoid double charges
+    try {
+      const since = new Date();
+      since.setMinutes(since.getMinutes() - 3);
+      const { data: recent } = await supabase
+        .from("orders" as any)
+        .select("id, payment_id, status, created_at")
+        .eq("customer_email", data.email)
+        .gte("created_at", since.toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const existing = Array.isArray(recent) ? recent.find((o: any) => o.status === "pending" && o.payment_id) : null;
+      if (existing && existing.payment_id) {
+        return {
+          success: true,
+          checkoutUrl: getCheckoutUrl(existing.payment_id),
+          orderId: existing.id,
+        };
+      }
+    } catch {}
     // 1. Generate order number
     const orderNumber = `ORD-${Date.now().toString().slice(-8)}`;
     
