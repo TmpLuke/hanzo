@@ -29,6 +29,52 @@ export interface CartCheckoutData {
 
 export async function createMoneyMotionCheckout(data: CheckoutData) {
   try {
+    // 0. Idempotency guard: reuse or attach session to recent pending order for this email
+    try {
+      const since = new Date();
+      since.setMinutes(since.getMinutes() - 3);
+      const { data: recent } = await supabase
+        .from("orders" as any)
+        .select("id, payment_id, status, created_at")
+        .eq("customer_email", data.email)
+        .gte("created_at", since.toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const existing = Array.isArray(recent) ? recent.find((o: any) => o.status === "pending") : null;
+      if (existing) {
+        if (existing.payment_id) {
+          return {
+            success: true,
+            checkoutUrl: getCheckoutUrl(existing.payment_id),
+            orderId: existing.id,
+          };
+        }
+        const siteUrl0 = (import.meta.env.VITE_SITE_URL || window.location.origin).replace('http://', 'https://');
+        const session0 = await createCheckoutSession({
+          description: `Order (pending) - ${data.productName}`,
+          urls: {
+            success: `${siteUrl0}/checkout/success?order_id=${existing.id}`,
+            cancel: `${siteUrl0}/checkout/cancel?order_id=${existing.id}`,
+            failure: `${siteUrl0}/checkout/failure?order_id=${existing.id}`,
+          },
+          userInfo: { email: data.email },
+          lineItems: [
+            {
+              name: data.productName,
+              description: `${data.productName} - ${data.variantLabel}`,
+              pricePerItemInCents: data.priceCents,
+              quantity: 1,
+            },
+          ],
+        });
+        await supabase.from("orders" as any).update({ payment_id: session0.checkoutSessionId }).eq("id", existing.id);
+        return {
+          success: true,
+          checkoutUrl: getCheckoutUrl(session0.checkoutSessionId),
+          orderId: existing.id,
+        };
+      }
+    } catch {}
     // 1. Generate order number
     const orderNumber = `ORD-${Date.now().toString().slice(-8)}`;
     
@@ -118,17 +164,43 @@ export async function createCartCheckout(data: CartCheckoutData) {
       since.setMinutes(since.getMinutes() - 3);
       const { data: recent } = await supabase
         .from("orders" as any)
-        .select("id, payment_id, status, created_at")
+        .select("id, payment_id, status, created_at, amount, product_name")
         .eq("customer_email", data.email)
         .gte("created_at", since.toISOString())
         .order("created_at", { ascending: false })
         .limit(1);
-      const existing = Array.isArray(recent) ? recent.find((o: any) => o.status === "pending" && o.payment_id) : null;
-      if (existing && existing.payment_id) {
+      const existingPending = Array.isArray(recent) ? recent.find((o: any) => o.status === "pending") : null;
+      if (existingPending) {
+        if (existingPending.payment_id) {
+          return {
+            success: true,
+            checkoutUrl: getCheckoutUrl(existingPending.payment_id),
+            orderId: existingPending.id,
+          };
+        }
+        // Attach a new session to this existing pending order instead of creating a new order
+        let lineItems0 = data.items.map(item => ({
+          name: item.productName,
+          description: `${item.productName} - ${item.variantLabel}`,
+          pricePerItemInCents: Math.round(item.price * 100),
+          quantity: item.quantity,
+        }));
+        const siteUrl0 = (import.meta.env.VITE_SITE_URL || window.location.origin).replace('http://', 'https://');
+        const session0 = await createCheckoutSession({
+          description: `Order (pending) - ${data.items.length} item(s)`,
+          urls: {
+            success: `${siteUrl0}/checkout/success?order_id=${existingPending.id}`,
+            cancel: `${siteUrl0}/checkout/cancel?order_id=${existingPending.id}`,
+            failure: `${siteUrl0}/checkout/failure?order_id=${existingPending.id}`,
+          },
+          userInfo: { email: data.email },
+          lineItems: lineItems0,
+        });
+        await supabase.from("orders" as any).update({ payment_id: session0.checkoutSessionId }).eq("id", existingPending.id);
         return {
           success: true,
-          checkoutUrl: getCheckoutUrl(existing.payment_id),
-          orderId: existing.id,
+          checkoutUrl: getCheckoutUrl(session0.checkoutSessionId),
+          orderId: existingPending.id,
         };
       }
     } catch {}
