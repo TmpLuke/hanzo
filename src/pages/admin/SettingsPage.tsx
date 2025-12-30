@@ -508,12 +508,11 @@ export default function SettingsPage() {
                   onChange={(e) => {
                     const newSettings = { ...settings, announcementText: e.target.value };
                     setSettings(newSettings);
-                  }}
-                  onBlur={() => {
-                    // Save to localStorage when user finishes editing
+                    
+                    // Update localStorage immediately as user types
                     localStorage.setItem('announcementSettings', JSON.stringify({
                       showAnnouncement: settings.showAnnouncement,
-                      announcementText: settings.announcementText
+                      announcementText: e.target.value
                     }));
                     window.dispatchEvent(new Event('announcementUpdate'));
                   }}

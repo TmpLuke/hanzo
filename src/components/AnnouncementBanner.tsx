@@ -4,36 +4,41 @@ import { X } from "lucide-react";
 export function AnnouncementBanner() {
   const [isVisible, setIsVisible] = useState(true);
   const [bannerText, setBannerText] = useState("🎄 WINTER SALE! Use code HANZO10 for 10% OFF! 🎁");
-  const [showBanner, setShowBanner] = useState(true); // Always show for now
+  const [showBanner, setShowBanner] = useState(true);
+
+  // Load settings function
+  const loadSettings = () => {
+    const savedSettings = localStorage.getItem('announcementSettings');
+    
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        const shouldShow = settings.showAnnouncement === true;
+        const text = settings.announcementText || "🎄 WINTER SALE! Use code HANZO10 for 10% OFF! 🎁";
+        
+        setShowBanner(shouldShow);
+        setBannerText(text);
+        setIsVisible(true); // Reset visibility when settings change
+      } catch (e) {
+        console.error('Failed to parse announcement settings', e);
+      }
+    }
+  };
 
   useEffect(() => {
-    const loadSettings = () => {
-      const savedSettings = localStorage.getItem('announcementSettings');
-      
-      if (savedSettings) {
-        try {
-          const settings = JSON.parse(savedSettings);
-          const shouldShow = settings.showAnnouncement === true;
-          const text = settings.announcementText || "🎄 WINTER SALE! Use code HANZO10 for 10% OFF! 🎁";
-          
-          setShowBanner(shouldShow);
-          setBannerText(text);
-        } catch (e) {
-          // Keep default values on error
-        }
+    // Load on mount
+    loadSettings();
+
+    // Listen for storage changes (from other tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'announcementSettings' || e.key === null) {
+        loadSettings();
       }
     };
 
-    loadSettings();
-
-    const handleStorageChange = () => {
-      loadSettings();
-      setIsVisible(true);
-    };
-
+    // Listen for custom event (from same tab)
     const handleCustomEvent = () => {
       loadSettings();
-      setIsVisible(true);
     };
 
     window.addEventListener('storage', handleStorageChange);
