@@ -61,6 +61,7 @@ const statusConfig = {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -94,7 +95,25 @@ export default function ProductsPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name");
+
+      if (error) {
+        console.error("Error fetching categories:", error);
+      } else {
+        setCategories(data || []);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -543,11 +562,22 @@ export default function ProductsPage() {
             </div>
             <div className="space-y-2">
               <Label>Category</Label>
-              <Input 
-                value={newProduct.category} 
-                onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                placeholder="cheats"
-              />
+              <Select value={newProduct.category} onValueChange={(value) => setNewProduct({ ...newProduct, category: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.length > 0 ? (
+                    categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.slug}>
+                        {cat.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="cheats">Cheats (default)</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label>Status</Label>
