@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { fetchProducts, type Product } from "@/data/products";
@@ -12,6 +12,8 @@ import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { useCart } from "@/contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { StatsCounter } from "@/components/home/StatsCounter";
+import { BackToTop } from "@/components/BackToTop";
 
 // Store products globally to avoid re-fetching
 let cachedProducts: Product[] = [];
@@ -146,9 +148,12 @@ function PayPalNoticeBanner() {
 function ProductCardVisuals({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const cardRef = useRef<HTMLDivElement>(null);
+  
   const cheapestVariant = product.variants && product.variants.length > 0
     ? product.variants.reduce((min, v) => v.price < min.price ? v : min, product.variants[0])
     : { id: `${product.id}-1day`, label: "1 Day", price: product.price, duration: "1day" as const };
+  
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -161,9 +166,36 @@ function ProductCardVisuals({ product }: { product: Product }) {
       image: product.image,
     });
   };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+  };
+
   return (
     <div
-      className="group relative bg-gradient-to-br from-card to-card/50 rounded-3xl border border-border/50 overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 cursor-pointer hover:-translate-y-1"
+      ref={cardRef}
+      className="group relative bg-gradient-to-br from-card to-card/50 rounded-3xl border border-border/50 overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 cursor-pointer"
+      style={{ transformStyle: 'preserve-3d', transition: 'transform 0.1s ease-out, box-shadow 0.3s ease' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       onClick={() => navigate(`/product/${product.id}`)}
     >
       {/* Glow effect on hover */}
@@ -498,8 +530,10 @@ const Index = () => {
     <>
       <AnnouncementBanner />
       <CouponPopup />
+      <BackToTop />
       <MainLayout hideFooter={false}>
         <HeroSection />
+        <StatsCounter />
         <PayPalNoticeBanner />
         {isLoading ? (
           <div className="flex items-center justify-center py-24">

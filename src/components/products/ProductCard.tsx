@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Product } from "@/data/products";
 import { IconCart } from "@/components/icons/HanzoIcons";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   
   // Get the cheapest variant price
   const cheapestPrice = product.variants.length > 0 
@@ -42,9 +43,37 @@ export function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+  };
+
   return (
     <Link to={`/product/${product.id}`} className="group block">
-      <div className="rounded-3xl bg-gradient-to-br from-card to-card/50 border border-border/50 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 overflow-hidden relative hover:-translate-y-2">
+      <div 
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="rounded-3xl bg-gradient-to-br from-card to-card/50 border border-border/50 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden relative"
+        style={{ transformStyle: 'preserve-3d', transition: 'transform 0.1s ease-out, box-shadow 0.3s ease' }}
+      >
         {/* Glow effect on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
