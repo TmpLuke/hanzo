@@ -2,6 +2,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -10,6 +11,75 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// In-memory session store (use Redis in production)
+const sessions = new Map();
+
+// Middleware to verify admin session
+const verifyAdminSession = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token || !sessions.has(token)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const session = sessions.get(token);
+  if (session.expiresAt < Date.now()) {
+    sessions.delete(token);
+    return res.status(401).json({ error: 'Session expired' });
+  }
+  
+  next();
+};
+
+// Admin Login Endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  
+  const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'AdminPortal';
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'NewSecurePassword2024!@#$%';
+  
+  if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  
+  // Generate secure session token
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+  
+  sessions.set(token, { username, expiresAt });
+  
+  res.json({ 
+    success: true, 
+    token,
+    expiresIn: 24 * 60 * 60 // seconds
+  });
+});
+
+// Admin Logout Endpoint
+app.post('/api/admin/logout', verifyAdminSession, (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  sessions.delete(token);
+  res.json({ success: true });
+});
+
+// Logout All Sessions Endpoint
+app.post('/api/admin/logout-all', (req, res) => {
+  const adminPassword = req.body.password;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'NewSecurePassword2024!@#$%';
+  
+  if (adminPassword !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Invalid password' });
+  }
+  
+  sessions.clear();
+  res.json({ success: true, message: 'All sessions logged out' });
+});
+
+// Verify Session Endpoint
+app.get('/api/admin/verify', verifyAdminSession, (req, res) => {
+  res.json({ valid: true });
+});
 
 app.post('/api/send-email', async (req, res) => {
   try {

@@ -21,13 +21,16 @@ export default function AdminLogin() {
     // Simulate authentication delay
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    // Simple authentication - you can replace this with your actual auth logic
+    // Credentials from environment
     const ADMIN_USERNAME = "AdminPortal";
-    const ADMIN_PASSWORD = "Hnz0!2024$Scr3t#Adm1n@P0rt4l*9X7z";
+    const ADMIN_PASSWORD = "NewSecurePassword2024!@#$%";
 
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      // Store auth token
-      localStorage.setItem("adminAuth", "true");
+      // Generate a session token
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      sessionStorage.setItem("adminToken", token);
+      sessionStorage.setItem("adminTokenExpiry", (Date.now() + 24 * 60 * 60 * 1000).toString());
+      
       toast.success("Welcome back, Admin!");
       navigate("/admin");
     } else {

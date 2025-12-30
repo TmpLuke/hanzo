@@ -70,7 +70,7 @@ export function CartSheet() {
                       <h4 className="font-semibold truncate">{item.productName}</h4>
                       <p className="text-sm text-muted-foreground">{item.variantLabel}</p>
                       <p className="text-lg font-bold text-primary mt-1">
-                        ${item.price.toFixed(2)}
+                        ${(item.price || 0).toFixed(2)}
                       </p>
                     </div>
                     <div className="flex flex-col items-end justify-between">

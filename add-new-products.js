@@ -31,7 +31,7 @@ const newProducts = [
       '24/7 Discord support'
     ],
     is_featured: true,
-    status: 'active',
+    status: 'undetected',
     rating: 4.8,
     reviews: 127
   },
@@ -52,7 +52,7 @@ const newProducts = [
       'Discord support'
     ],
     is_featured: false,
-    status: 'active',
+    status: 'undetected',
     rating: 4.6,
     reviews: 89
   },
@@ -73,7 +73,7 @@ const newProducts = [
       'Discord support'
     ],
     is_featured: false,
-    status: 'active',
+    status: 'undetected',
     rating: 4.7,
     reviews: 64
   }
