@@ -16,27 +16,9 @@ export default function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate authentication delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    // Credentials from environment
-    const ADMIN_USERNAME = "AdminPortal";
-    const ADMIN_PASSWORD = "NewSecurePassword2024!@#$%";
-
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      // Generate a session token
-      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      sessionStorage.setItem("adminToken", token);
-      sessionStorage.setItem("adminTokenExpiry", (Date.now() + 24 * 60 * 60 * 1000).toString());
-      
-      toast.success("Welcome back, Admin!");
-      navigate("/admin");
-    } else {
-      toast.error("Invalid credentials. Please try again.");
-      setIsLoading(false);
-    }
+    
+    // Admin panel is currently disabled
+    toast.error("Admin panel is temporarily disabled");
   };
 
   return (
