@@ -1,0 +1,680 @@
+{
+  "backup_date": "2025-12-30T05:20:42.609Z",
+  "total_products": 10,
+  "products": [
+    {
+      "id": "76519944-b330-41e1-a84c-f966910a608f",
+      "name": "Rainbow Six Siege",
+      "description": "Tactical R6 tool with clean wall info and helpers.",
+      "price": 6.99,
+      "category": "r",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/Sxt402tq/content.webp",
+      "features": [
+        "ESP",
+        "Aimbot",
+        "Gadget ESP",
+        "Recoil Control",
+        "Safe"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:16.402014+00:00",
+      "updated_at": "2025-12-30T04:56:55.581516+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/Sxt402tq/content.webp",
+        "https://i.postimg.cc/cJ9BBZHt/r6s-multihack-s3.webp",
+        "https://i.postimg.cc/q7bxx0Rb/r6s-multihack-s4.webp",
+        "https://i.postimg.cc/yx9hKZTg/r6s-multihack-s2.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/m2fNwmb5/m12.webp",
+        "https://i.postimg.cc/4xXvCnHP/m22.webp"
+      ],
+      "variants": [
+        {
+          "id": "51a8ada8-a560-4e18-9d41-deb4f0fd0cdd",
+          "product_id": "76519944-b330-41e1-a84c-f966910a608f",
+          "duration": "1day",
+          "price": 6.99,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:16.48078+00:00",
+          "updated_at": "2025-12-30T04:22:16.48078+00:00"
+        },
+        {
+          "id": "d1a9414e-16a8-41b3-bc45-ab6fe405cec0",
+          "product_id": "76519944-b330-41e1-a84c-f966910a608f",
+          "duration": "1week",
+          "price": 34.95,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:16.48078+00:00",
+          "updated_at": "2025-12-30T04:22:16.48078+00:00"
+        },
+        {
+          "id": "aaefc657-a813-4d72-bed0-22b3ff03142c",
+          "product_id": "76519944-b330-41e1-a84c-f966910a608f",
+          "duration": "1month",
+          "price": 104.85,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:16.48078+00:00",
+          "updated_at": "2025-12-30T04:22:16.48078+00:00"
+        },
+        {
+          "id": "c491bd9f-eb74-405b-bb2f-eaa91fe5cdef",
+          "product_id": "76519944-b330-41e1-a84c-f966910a608f",
+          "duration": "lifetime",
+          "price": 349.5,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:16.48078+00:00",
+          "updated_at": "2025-12-30T04:22:16.48078+00:00"
+        }
+      ]
+    },
+    {
+      "id": "606130d2-4fe4-4bf0-acad-647f74932c84",
+      "name": "Arc Raiders",
+      "description": "Premium advantage suite for Arc Raiders.",
+      "price": 8.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/KzxgdHHN/content.webp",
+      "features": [
+        "ESP",
+        "Aimbot",
+        "Loot ESP",
+        "Player ESP",
+        "Safe"
+      ],
+      "is_featured": true,
+      "created_at": "2025-12-30T04:22:15.126948+00:00",
+      "updated_at": "2025-12-30T04:31:46.493629+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/KzxgdHHN/content.webp",
+        "https://i.postimg.cc/XvcrcgYG/arc1.webp",
+        "https://i.postimg.cc/fLzJH0V6/arc2.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/fygtSTTr/menu1.webp",
+        "https://i.postimg.cc/Y2Xms8fP/menu3.webp",
+        "https://i.postimg.cc/3JdD5pt8/menu4.webp"
+      ],
+      "variants": [
+        {
+          "id": "98ae82e1-00b4-4473-80b6-07f967096adf",
+          "product_id": "606130d2-4fe4-4bf0-acad-647f74932c84",
+          "duration": "1day",
+          "price": 8.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.195588+00:00",
+          "updated_at": "2025-12-30T04:22:15.195588+00:00"
+        },
+        {
+          "id": "0bb1e0eb-f86d-445a-ab60-9338abceb11c",
+          "product_id": "606130d2-4fe4-4bf0-acad-647f74932c84",
+          "duration": "1week",
+          "price": 44.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.195588+00:00",
+          "updated_at": "2025-12-30T04:22:15.195588+00:00"
+        },
+        {
+          "id": "752d97b6-d658-4cbe-be76-1d040c79ccd5",
+          "product_id": "606130d2-4fe4-4bf0-acad-647f74932c84",
+          "duration": "1month",
+          "price": 133.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.195588+00:00",
+          "updated_at": "2025-12-30T04:22:15.195588+00:00"
+        },
+        {
+          "id": "42d0422b-a7fb-4dd1-a205-09052e6d3e50",
+          "product_id": "606130d2-4fe4-4bf0-acad-647f74932c84",
+          "duration": "lifetime",
+          "price": 445,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.195588+00:00",
+          "updated_at": "2025-12-30T04:22:15.195588+00:00"
+        }
+      ]
+    },
+    {
+      "id": "04f9edc2-7621-4f65-97c6-3ab4b4048010",
+      "name": "Apex Legends",
+      "description": "Configurable Apex Legends suite for ranked grinders.",
+      "price": 7.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/wBGjkbdB/content.webp",
+      "features": [
+        "Aimbot",
+        "ESP",
+        "Glow ESP",
+        "Item ESP",
+        "Safe"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:15.921327+00:00",
+      "updated_at": "2025-12-30T04:37:24.792608+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/wBGjkbdB/content.webp"
+      ],
+      "menu_images": null,
+      "variants": [
+        {
+          "id": "bae3082e-c23e-42ee-9580-5e40d7d2273c",
+          "product_id": "04f9edc2-7621-4f65-97c6-3ab4b4048010",
+          "duration": "1day",
+          "price": 7.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.985914+00:00",
+          "updated_at": "2025-12-30T04:22:15.985914+00:00"
+        },
+        {
+          "id": "6862bc95-a19b-49f2-81f5-f3a4f314465c",
+          "product_id": "04f9edc2-7621-4f65-97c6-3ab4b4048010",
+          "duration": "1week",
+          "price": 39.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.985914+00:00",
+          "updated_at": "2025-12-30T04:22:15.985914+00:00"
+        },
+        {
+          "id": "e96bb86d-7cf8-41ff-997c-d7f5a47f7dd8",
+          "product_id": "04f9edc2-7621-4f65-97c6-3ab4b4048010",
+          "duration": "1month",
+          "price": 118.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.985914+00:00",
+          "updated_at": "2025-12-30T04:22:15.985914+00:00"
+        },
+        {
+          "id": "6c6eabf8-3b04-4bb3-bee4-4ea780940af7",
+          "product_id": "04f9edc2-7621-4f65-97c6-3ab4b4048010",
+          "duration": "lifetime",
+          "price": 395,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.985914+00:00",
+          "updated_at": "2025-12-30T04:22:15.985914+00:00"
+        }
+      ]
+    },
+    {
+      "id": "abaf936b-7c6c-4d45-814f-e3d1436bc3fa",
+      "name": "Battlefield 6",
+      "description": "Large-scale Battlefield 6 tool with conquest and beyond.",
+      "price": 11.99,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/X7kNPv0D/content.webp",
+      "features": [
+        "Aimbot",
+        "ESP",
+        "Vehicle ESP",
+        "Radar",
+        "Undetected"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:16.283166+00:00",
+      "updated_at": "2025-12-30T04:38:22.743886+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/X7kNPv0D/content.webp"
+      ],
+      "menu_images": null,
+      "variants": [
+        {
+          "id": "6eb688ff-a5c1-434f-ac54-d6a8d0ea0b4e",
+          "product_id": "abaf936b-7c6c-4d45-814f-e3d1436bc3fa",
+          "duration": "1day",
+          "price": 11.99,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:16.343652+00:00",
+          "updated_at": "2025-12-30T04:22:16.343652+00:00"
+        },
+        {
+          "id": "8dec94ab-5346-4cb6-8396-f49fab4d1bbc",
+          "product_id": "abaf936b-7c6c-4d45-814f-e3d1436bc3fa",
+          "duration": "1week",
+          "price": 59.95,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:16.343652+00:00",
+          "updated_at": "2025-12-30T04:22:16.343652+00:00"
+        },
+        {
+          "id": "20dc1151-370b-4c1e-96f3-8c2bb867c586",
+          "product_id": "abaf936b-7c6c-4d45-814f-e3d1436bc3fa",
+          "duration": "1month",
+          "price": 179.85,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:16.343652+00:00",
+          "updated_at": "2025-12-30T04:22:16.343652+00:00"
+        },
+        {
+          "id": "d537078e-dc0d-478c-a1d9-06c743eda2bb",
+          "product_id": "abaf936b-7c6c-4d45-814f-e3d1436bc3fa",
+          "duration": "lifetime",
+          "price": 599.5,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:16.343652+00:00",
+          "updated_at": "2025-12-30T04:22:16.343652+00:00"
+        }
+      ]
+    },
+    {
+      "id": "e490b8a2-2a61-410d-85d6-93653b2a9f48",
+      "name": "Fortnite",
+      "description": "Smooth, low-FOV Fortnite advantage built for wins.",
+      "price": 11.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/T2rTyPhX/content.webp",
+      "features": [
+        "Aimbot",
+        "ESP",
+        "Loot ESP",
+        "Build ESP",
+        "Undetected"
+      ],
+      "is_featured": true,
+      "created_at": "2025-12-30T04:22:15.628012+00:00",
+      "updated_at": "2025-12-30T04:39:26.183253+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/T2rTyPhX/content.webp"
+      ],
+      "menu_images": null,
+      "variants": [
+        {
+          "id": "10ca09ee-d5f2-4509-8704-745bc4ab8bdb",
+          "product_id": "e490b8a2-2a61-410d-85d6-93653b2a9f48",
+          "duration": "1day",
+          "price": 11.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.704495+00:00",
+          "updated_at": "2025-12-30T04:22:15.704495+00:00"
+        },
+        {
+          "id": "59f6422a-68bf-4c8c-ae54-36128d62c84b",
+          "product_id": "e490b8a2-2a61-410d-85d6-93653b2a9f48",
+          "duration": "1week",
+          "price": 59.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.704495+00:00",
+          "updated_at": "2025-12-30T04:22:15.704495+00:00"
+        },
+        {
+          "id": "f48e5328-886e-49e7-b17a-6e830f579622",
+          "product_id": "e490b8a2-2a61-410d-85d6-93653b2a9f48",
+          "duration": "1month",
+          "price": 178.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.704495+00:00",
+          "updated_at": "2025-12-30T04:22:15.704495+00:00"
+        },
+        {
+          "id": "744eab78-76a4-4e22-a0d5-f006ee7e6889",
+          "product_id": "e490b8a2-2a61-410d-85d6-93653b2a9f48",
+          "duration": "lifetime",
+          "price": 595,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.704495+00:00",
+          "updated_at": "2025-12-30T04:22:15.704495+00:00"
+        }
+      ]
+    },
+    {
+      "id": "42dcfe78-d6aa-4802-9ef5-bd1d22613c50",
+      "name": "HWID Spoofer",
+      "description": "Clean slate HWID spoofer for supported games.",
+      "price": 19.99,
+      "category": "Fortnite",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/tJ50BYVM/content.webp",
+      "features": [
+        "HWID Spoof",
+        "Instant",
+        "Safe",
+        "Multi-Game",
+        "Unban"
+      ],
+      "is_featured": true,
+      "created_at": "2025-12-30T04:22:16.160905+00:00",
+      "updated_at": "2025-12-30T04:43:53.241662+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/tJ50BYVM/content.webp"
+      ],
+      "menu_images": null,
+      "variants": [
+        {
+          "id": "152d4c32-11f0-4b8e-9004-5cdc81554138",
+          "product_id": "42dcfe78-d6aa-4802-9ef5-bd1d22613c50",
+          "duration": "1day",
+          "price": 19.99,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:16.225543+00:00",
+          "updated_at": "2025-12-30T04:22:16.225543+00:00"
+        },
+        {
+          "id": "22e65d9d-a3bc-43ac-80e5-3a1e0e640a41",
+          "product_id": "42dcfe78-d6aa-4802-9ef5-bd1d22613c50",
+          "duration": "1week",
+          "price": 99.95,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:16.225543+00:00",
+          "updated_at": "2025-12-30T04:22:16.225543+00:00"
+        },
+        {
+          "id": "798a8664-ad8f-46ad-bcae-1b3489ca776c",
+          "product_id": "42dcfe78-d6aa-4802-9ef5-bd1d22613c50",
+          "duration": "1month",
+          "price": 299.85,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:16.225543+00:00",
+          "updated_at": "2025-12-30T04:22:16.225543+00:00"
+        },
+        {
+          "id": "77ac9f60-cb96-490d-b11d-056545cafc5b",
+          "product_id": "42dcfe78-d6aa-4802-9ef5-bd1d22613c50",
+          "duration": "lifetime",
+          "price": 999.5,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:16.225543+00:00",
+          "updated_at": "2025-12-30T04:22:16.225543+00:00"
+        }
+      ]
+    },
+    {
+      "id": "0e2791bf-6bb1-4156-a0e1-968a1a073757",
+      "name": "Marvel Rivals",
+      "description": "Competitive tools for Marvel Rivals ranked play.",
+      "price": 10.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/dVRszVcv/content.webp",
+      "features": [
+        "Aimbot",
+        "ESP",
+        "Ability ESP",
+        "Ultimate Tracker",
+        "Undetected"
+      ],
+      "is_featured": true,
+      "created_at": "2025-12-30T04:22:15.258266+00:00",
+      "updated_at": "2025-12-30T04:36:43.134695+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/dVRszVcv/content.webp",
+        "https://i.postimg.cc/s1dzNtnv/footage1.webp",
+        "https://i.postimg.cc/Vs3bwvp1/footage2.webp",
+        "https://i.postimg.cc/52mH830Q/footage3.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/tJPJJdwn/aimbot.webp",
+        "https://i.postimg.cc/WpJh5jzD/ESP.webp"
+      ],
+      "variants": [
+        {
+          "id": "58459cb6-9507-4263-97fe-40a526a569ed",
+          "product_id": "0e2791bf-6bb1-4156-a0e1-968a1a073757",
+          "duration": "1day",
+          "price": 10.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.319952+00:00",
+          "updated_at": "2025-12-30T04:22:15.319952+00:00"
+        },
+        {
+          "id": "34aa8798-e58c-44cf-89d7-63868215ac1b",
+          "product_id": "0e2791bf-6bb1-4156-a0e1-968a1a073757",
+          "duration": "1week",
+          "price": 54.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.319952+00:00",
+          "updated_at": "2025-12-30T04:22:15.319952+00:00"
+        },
+        {
+          "id": "ee52f429-00c4-44ef-a812-8037eb27a188",
+          "product_id": "0e2791bf-6bb1-4156-a0e1-968a1a073757",
+          "duration": "1month",
+          "price": 163.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.319952+00:00",
+          "updated_at": "2025-12-30T04:22:15.319952+00:00"
+        },
+        {
+          "id": "5d70d8d7-c99c-478a-93a6-d1a3855b6c7b",
+          "product_id": "0e2791bf-6bb1-4156-a0e1-968a1a073757",
+          "duration": "lifetime",
+          "price": 545,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.319952+00:00",
+          "updated_at": "2025-12-30T04:22:15.319952+00:00"
+        }
+      ]
+    },
+    {
+      "id": "1627b4a8-796f-498f-b463-211c1d70b1e8",
+      "name": "Rust",
+      "description": "Undetected Rust tool focused on legit gameplay.",
+      "price": 9.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/nr8Vyjrh/content.webp",
+      "features": [
+        "ESP",
+        "Aimbot",
+        "Loot ESP",
+        "Player ESP",
+        "Anti-Aim"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:15.500089+00:00",
+      "updated_at": "2025-12-30T04:56:25.799394+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/nr8Vyjrh/content.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/SNkYR3QR/1.webp",
+        "https://i.postimg.cc/mg6PdrQq/2.webp",
+        "https://i.postimg.cc/cJgrPNh3/4.webp"
+      ],
+      "variants": [
+        {
+          "id": "97be95c8-cd41-478f-b0d4-6e18b01ee5a3",
+          "product_id": "1627b4a8-796f-498f-b463-211c1d70b1e8",
+          "duration": "1day",
+          "price": 9.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.574151+00:00",
+          "updated_at": "2025-12-30T04:22:15.574151+00:00"
+        },
+        {
+          "id": "4bb6100f-ca2b-4434-9345-956e9f19b2a0",
+          "product_id": "1627b4a8-796f-498f-b463-211c1d70b1e8",
+          "duration": "1week",
+          "price": 49.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.574151+00:00",
+          "updated_at": "2025-12-30T04:22:15.574151+00:00"
+        },
+        {
+          "id": "9796734c-9e9d-4c74-b60f-d49e5f0d9dd6",
+          "product_id": "1627b4a8-796f-498f-b463-211c1d70b1e8",
+          "duration": "1month",
+          "price": 148.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.574151+00:00",
+          "updated_at": "2025-12-30T04:22:15.574151+00:00"
+        },
+        {
+          "id": "48186acc-ef4e-4e64-bd17-ca6e0451e565",
+          "product_id": "1627b4a8-796f-498f-b463-211c1d70b1e8",
+          "duration": "lifetime",
+          "price": 495,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.574151+00:00",
+          "updated_at": "2025-12-30T04:22:15.574151+00:00"
+        }
+      ]
+    },
+    {
+      "id": "832173e2-e64f-4222-aefb-5f5ab2f6b968",
+      "name": "Valorant",
+      "description": "Low-Risk Valorant tool with clean wall info and helpers.",
+      "price": 7.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/HsHLYMWC/3db2f472-88f7-4981-b637-3ddf3565308a.webp",
+      "features": [
+        "ESP",
+        "Aimbot",
+        "Triggerbot",
+        "Radar",
+        "Undetected"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:16.039086+00:00",
+      "updated_at": "2025-12-30T04:58:26.15337+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/HsHLYMWC/3db2f472-88f7-4981-b637-3ddf3565308a.webp",
+        "https://i.postimg.cc/2yHvd7TX/12.webp",
+        "https://i.postimg.cc/DZP10TX9/42.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/7YHbwzXz/m1.png",
+        "https://i.postimg.cc/Z50Ryh1w/m2.webp"
+      ],
+      "variants": [
+        {
+          "id": "261bde59-c6fe-4e1d-9389-bea1806a8ab1",
+          "product_id": "832173e2-e64f-4222-aefb-5f5ab2f6b968",
+          "duration": "1day",
+          "price": 7.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:16.107382+00:00",
+          "updated_at": "2025-12-30T04:22:16.107382+00:00"
+        },
+        {
+          "id": "2d4bf19c-3f30-41f6-bdd6-10c08aabdff3",
+          "product_id": "832173e2-e64f-4222-aefb-5f5ab2f6b968",
+          "duration": "1week",
+          "price": 39.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:16.107382+00:00",
+          "updated_at": "2025-12-30T04:22:16.107382+00:00"
+        },
+        {
+          "id": "9273ec28-a566-4480-9f86-40da25d9fca1",
+          "product_id": "832173e2-e64f-4222-aefb-5f5ab2f6b968",
+          "duration": "1month",
+          "price": 118.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:16.107382+00:00",
+          "updated_at": "2025-12-30T04:22:16.107382+00:00"
+        },
+        {
+          "id": "5feadc21-92db-4993-8a14-5ae0a878b2db",
+          "product_id": "832173e2-e64f-4222-aefb-5f5ab2f6b968",
+          "duration": "lifetime",
+          "price": 395,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:16.107382+00:00",
+          "updated_at": "2025-12-30T04:22:16.107382+00:00"
+        }
+      ]
+    },
+    {
+      "id": "93535615-cec0-412f-bffa-98d116c1e8f7",
+      "name": "BO7",
+      "description": "High-impact suite for Black Ops 7.",
+      "price": 7.9,
+      "category": "cheats",
+      "status": "undetected",
+      "image_url": "https://i.postimg.cc/9XTQGpgW/content.webp",
+      "features": [
+        "Aimbot",
+        "Wallhack",
+        "Radar",
+        "No Recoil",
+        "Safe Mode"
+      ],
+      "is_featured": false,
+      "created_at": "2025-12-30T04:22:15.379385+00:00",
+      "updated_at": "2025-12-30T05:05:41.743566+00:00",
+      "rating": 4.5,
+      "reviews": 50,
+      "detailed_features": [],
+      "gallery_images": [
+        "https://i.postimg.cc/9XTQGpgW/content.webp",
+        "https://i.postimg.cc/L8ScrkVt/Frost-Download-Setup-Guide.png",
+        "https://i.postimg.cc/hjNwMVj1/Frost-Download-Setup-Guide.webp",
+        "https://i.postimg.cc/fW01yq20/Frost-Download-Setup-Guide.webp"
+      ],
+      "menu_images": [
+        "https://i.postimg.cc/SNM1QXKB/Screenshot-1.png",
+        "https://i.postimg.cc/vZ7P9pf1/Screenshot-2.webp",
+        "https://i.postimg.cc/0Q4ZPx1P/Screenshot-6.webp"
+      ],
+      "variants": [
+        {
+          "id": "2a4a4347-cd24-48fe-b6df-142578dddbd7",
+          "product_id": "93535615-cec0-412f-bffa-98d116c1e8f7",
+          "duration": "1day",
+          "price": 7.9,
+          "label": "1 Day",
+          "created_at": "2025-12-30T04:22:15.44406+00:00",
+          "updated_at": "2025-12-30T04:22:15.44406+00:00"
+        },
+        {
+          "id": "de74d4b7-6209-4a6b-9d04-4fd88721d20c",
+          "product_id": "93535615-cec0-412f-bffa-98d116c1e8f7",
+          "duration": "1week",
+          "price": 39.5,
+          "label": "1 Week",
+          "created_at": "2025-12-30T04:22:15.44406+00:00",
+          "updated_at": "2025-12-30T04:22:15.44406+00:00"
+        },
+        {
+          "id": "d44b5aa2-d01f-4b0a-9aed-08bf142aeedf",
+          "product_id": "93535615-cec0-412f-bffa-98d116c1e8f7",
+          "duration": "1month",
+          "price": 118.5,
+          "label": "1 Month",
+          "created_at": "2025-12-30T04:22:15.44406+00:00",
+          "updated_at": "2025-12-30T04:22:15.44406+00:00"
+        },
+        {
+          "id": "aa6d38a5-3bf8-416b-b000-82beb59200fa",
+          "product_id": "93535615-cec0-412f-bffa-98d116c1e8f7",
+          "duration": "lifetime",
+          "price": 395,
+          "label": "Lifetime",
+          "created_at": "2025-12-30T04:22:15.44406+00:00",
+          "updated_at": "2025-12-30T04:22:15.44406+00:00"
+        }
+      ]
+    }
+  ]
+}
