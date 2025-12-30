@@ -10,10 +10,16 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Clear all sessions immediately
-    sessionStorage.removeItem("adminToken");
-    sessionStorage.removeItem("adminTokenExpiry");
-    setIsAuthenticated(false);
+    const token = sessionStorage.getItem("adminToken");
+    const expiry = sessionStorage.getItem("adminTokenExpiry");
+
+    if (token && expiry && Date.now() <= parseInt(expiry)) {
+      setIsAuthenticated(true);
+    } else {
+      sessionStorage.removeItem("adminToken");
+      sessionStorage.removeItem("adminTokenExpiry");
+      setIsAuthenticated(false);
+    }
     setIsLoading(false);
   }, []);
 
@@ -21,6 +27,9 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  // Always redirect to login - admin panel is disabled
-  return <Navigate to="/admin/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return <>{children}</>;
 }

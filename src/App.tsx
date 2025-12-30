@@ -2,9 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import HolidayEffects from "@/components/effects/HolidayEffects";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
@@ -28,21 +26,6 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
-
-// Force cache bust - everyone reloads
-const CACHE_VERSION = "v" + Date.now();
-
-function CacheBuster() {
-  useEffect(() => {
-    const lastVersion = localStorage.getItem('appVersion');
-    if (lastVersion !== CACHE_VERSION) {
-      localStorage.setItem('appVersion', CACHE_VERSION);
-      sessionStorage.clear();
-      window.location.reload();
-    }
-  }, []);
-  return null;
-}
 
 function AppRoutes() {
   const { isMaintenanceMode, isLoading } = useMaintenanceMode();
@@ -99,7 +82,6 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <CacheBuster />
           <AppRoutes />
         </BrowserRouter>
       </TooltipProvider>

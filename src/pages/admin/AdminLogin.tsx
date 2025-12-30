@@ -15,17 +15,29 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Log out everyone on page load
-  useEffect(() => {
-    sessionStorage.clear();
-    localStorage.clear();
-  }, []);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Admin panel is currently disabled
-    toast.error("Admin panel is temporarily disabled");
+    setIsLoading(true);
+
+    // Hardcoded credentials
+    const ADMIN_USERNAME = "AdminPortal";
+    const ADMIN_PASSWORD = "NewSecurePassword2024!@#$%";
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      // Create session token
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      const expiry = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+
+      sessionStorage.setItem("adminToken", token);
+      sessionStorage.setItem("adminTokenExpiry", expiry.toString());
+
+      toast.success("Login successful!");
+      navigate("/admin");
+    } else {
+      toast.error("Invalid credentials");
+    }
+
+    setIsLoading(false);
   };
 
   return (
