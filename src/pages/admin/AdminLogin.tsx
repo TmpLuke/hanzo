@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import hanzoLogo from "@/assets/hanzo-logo.png";
 import { Lock, User, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Log out everyone on page load
+  useEffect(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
