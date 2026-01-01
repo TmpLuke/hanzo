@@ -55,8 +55,10 @@ export async function getOrderStats() {
   
   if (error) throw error;
   
-  const total = orders.reduce((sum, order) => sum + parseFloat(order.amount), 0);
-  const completed = orders.filter(o => o.status === 'completed').length;
+  // Only count completed orders for revenue (matching dashboard logic)
+  const completedOrders = orders.filter(o => o.status === 'completed');
+  const total = completedOrders.reduce((sum, order) => sum + parseFloat(order.amount), 0);
+  const completed = completedOrders.length;
   const pending = orders.filter(o => o.status === 'pending').length;
   
   return {
