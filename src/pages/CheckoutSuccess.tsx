@@ -33,6 +33,47 @@ export default function CheckoutSuccess() {
 
       setOrder(data);
 
+      // If order is still pending, try to complete it
+      if (data.status === "pending" && data.payment_id) {
+        console.log("Order pending, attempting to complete...");
+        try {
+          // Call our webhook function to verify and complete the order
+          const webhookResponse = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moneymotion-webhook`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({
+                event: "checkout_session:complete",
+                checkoutSessionId: data.payment_id,
+                customer: {
+                  email: data.customer_email
+                }
+              })
+            }
+          );
+
+          if (webhookResponse.ok) {
+            console.log("Order completed successfully");
+            // Reload order to get updated status
+            const { data: updatedData } = await supabase
+              .from("orders" as any)
+              .select("*")
+              .eq("id", orderId)
+              .single();
+            
+            if (updatedData) {
+              setOrder(updatedData);
+            }
+          }
+        } catch (webhookError) {
+          console.error("Error completing order:", webhookError);
+        }
+      }
+
       // Get redemption code
       const { data: redemptionData } = await supabase
         .from("redemption_codes" as any)
@@ -43,9 +84,6 @@ export default function CheckoutSuccess() {
       if (redemptionData) {
         setRedemptionCode(redemptionData.code);
       }
-
-      // Note: Order completion is handled by the MoneyMotion webhook
-      // We only display the order information here
     } catch (error) {
       console.error("Error:", error);
     } finally {
