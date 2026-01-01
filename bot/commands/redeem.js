@@ -61,13 +61,13 @@ export async function handleRedeemButton(interaction) {
 
 // Handle modal submission - verify and redeem
 export async function handleRedeemModal(interaction) {
-  await interaction.deferReply({ ephemeral: true });
-
-  const code = interaction.fields.getTextFieldValue('redemption_code').toUpperCase().trim();
-  const userId = interaction.user.id;
-  const username = interaction.user.tag;
-
   try {
+    await interaction.deferReply({ ephemeral: true });
+
+    const code = interaction.fields.getTextInputValue('redemption_code').toUpperCase().trim();
+    const userId = interaction.user.id;
+    const username = interaction.user.tag;
+
     // Check if code exists and is valid
     const { data: redemption, error: fetchError } = await supabase
       .from('redemption_codes')
@@ -128,8 +128,8 @@ export async function handleRedeemModal(interaction) {
 
     // Get customer role from config or use default
     const customerRoleId = config.customerRoleId || process.env.CUSTOMER_ROLE_ID;
-    
-    if (customerRoleId) {
+
+    if (customerRoleId && interaction.guild) {
       try {
         const member = await interaction.guild.members.fetch(userId);
         await member.roles.add(customerRoleId);
@@ -173,12 +173,21 @@ export async function handleRedeemModal(interaction) {
       .setDescription(
         '**An error occurred while processing your redemption.**\n\n' +
         'Please try again in a moment.\n' +
-        'If the problem persists, contact support with your order number.'
+        'If the problem persists, contact support with your order number.\n\n' +
+        `Error: ${error.message || 'Unknown error'}`
       )
       .setFooter({ text: 'Hanzo Marketplace' })
       .setTimestamp();
 
-    await interaction.editReply({ embeds: [errorEmbed] });
+    try {
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply({ embeds: [errorEmbed] });
+      } else {
+        await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+      }
+    } catch (replyError) {
+      console.error('Error sending error message:', replyError);
+    }
   }
 }
 
@@ -186,14 +195,14 @@ export async function handleRedeemModal(interaction) {
 async function sendRedeemLog(interaction, redemption, code) {
   try {
     const logChannelId = config.redeemLogsChannelId || process.env.REDEEM_LOGS_CHANNEL_ID;
-    
+
     if (!logChannelId) {
       console.log('No redeem logs channel configured');
       return;
     }
 
     const logChannel = await interaction.client.channels.fetch(logChannelId);
-    
+
     if (!logChannel) {
       console.log('Redeem logs channel not found');
       return;

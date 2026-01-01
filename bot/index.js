@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { Client, GatewayIntentBits, Collection, MessageFlags } from 'discord.js';
 import { config } from './config.js';
 import { registerCommands } from './deploy-commands.js';
 import { loadCommands } from './utils/commandLoader.js';
@@ -34,7 +34,7 @@ client.once('ready', async () => {
   } catch (error) {
     console.error('❌ Failed to register commands:', error);
   }
-  
+
   // Set bot status
   client.user.setActivity('/ticket to open a ticket!', { type: 'PLAYING' });
 });
@@ -54,10 +54,10 @@ client.on('interactionCreate', async (interaction) => {
       await command.execute(interaction);
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}:`, error);
-      
+
       const errorMessage = {
         content: '❌ There was an error executing this command!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       };
 
       if (interaction.replied || interaction.deferred) {
@@ -70,37 +70,49 @@ client.on('interactionCreate', async (interaction) => {
 
   // Handle button interactions
   if (interaction.isButton()) {
-    if (interaction.customId === 'redeem_button') {
-      const { handleRedeemButton } = await import('./commands/redeem.js');
-      await handleRedeemButton(interaction);
-    } else if (interaction.customId === 'close_ticket') {
-      const { handleCloseTicket } = await import('./utils/ticketHandler.js');
-      await handleCloseTicket(interaction);
-    } else if (interaction.customId === 'get_all_alerts') {
-      const { handleGetAllAlerts } = await import('./commands/updates.js');
-      await handleGetAllAlerts(interaction);
+    try {
+      if (interaction.customId === 'redeem_button') {
+        const { handleRedeemButton } = await import('./commands/redeem.js');
+        await handleRedeemButton(interaction);
+      } else if (interaction.customId === 'close_ticket') {
+        const { handleCloseTicket } = await import('./utils/ticketHandler.js');
+        await handleCloseTicket(interaction);
+      } else if (interaction.customId === 'get_all_alerts') {
+        const { handleGetAllAlerts } = await import('./commands/updates.js');
+        await handleGetAllAlerts(interaction);
+      }
+    } catch (error) {
+      console.error(`Error handling button ${interaction.customId}:`, error);
     }
   }
 
   // Handle select menu interactions
   if (interaction.isStringSelectMenu()) {
-    if (interaction.customId === 'ticket_select') {
-      const { handleTicketSelect } = await import('./utils/ticketHandler.js');
-      await handleTicketSelect(interaction);
-    } else if (interaction.customId === 'updates_select') {
-      const { handleUpdatesSelect } = await import('./commands/updates.js');
-      await handleUpdatesSelect(interaction);
+    try {
+      if (interaction.customId === 'ticket_select') {
+        const { handleTicketSelect } = await import('./utils/ticketHandler.js');
+        await handleTicketSelect(interaction);
+      } else if (interaction.customId === 'updates_select') {
+        const { handleUpdatesSelect } = await import('./commands/updates.js');
+        await handleUpdatesSelect(interaction);
+      }
+    } catch (error) {
+      console.error(`Error handling select menu ${interaction.customId}:`, error);
     }
   }
 
   // Handle modal submissions
   if (interaction.isModalSubmit()) {
-    if (interaction.customId === 'redeem_modal') {
-      const { handleRedeemModal } = await import('./commands/redeem.js');
-      await handleRedeemModal(interaction);
-    } else if (interaction.customId.startsWith('ticket_modal_')) {
-      const { handleTicketModalSubmit } = await import('./utils/ticketHandler.js');
-      await handleTicketModalSubmit(interaction);
+    try {
+      if (interaction.customId === 'redeem_modal') {
+        const { handleRedeemModal } = await import('./commands/redeem.js');
+        await handleRedeemModal(interaction);
+      } else if (interaction.customId.startsWith('ticket_modal_')) {
+        const { handleTicketModalSubmit } = await import('./utils/ticketHandler.js');
+        await handleTicketModalSubmit(interaction);
+      }
+    } catch (error) {
+      console.error(`Error handling modal ${interaction.customId}:`, error);
     }
   }
 });
@@ -112,7 +124,7 @@ client.on('messageCreate', async (message) => {
 
   // Check if message is in the auto-react channel
   const AUTO_REACT_CHANNEL_ID = '1453498365005529241';
-  
+
   if (message.channel.id === AUTO_REACT_CHANNEL_ID) {
     try {
       await message.react('👍');

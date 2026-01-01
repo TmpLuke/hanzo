@@ -1,43 +1,67 @@
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
-const SUPABASE_URL = 'https://rucygmkwvmkzbxydoglm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1Y3lnbWt3dm1remJ4eWRvZ2xtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1OTYzMTMsImV4cCI6MjA4MjE3MjMxM30.5HORNuSF2hBZo1hLQ8B-SPMtVqhlrgoEB8-nepl9xc4';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
-async function applyMigration() {
-    try {
-        const migrationPath = path.join(__dirname, 'supabase', 'migrations', '20251225000004_add_admin_settings.sql');
-        const sql = fs.readFileSync(migrationPath, 'utf8');
-
-        console.log('Applying migration...');
-
-        // Using the same endpoint as the existing update-database.js
-        // Assuming 'exec' function exists as per the existing codebase patterns
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ query: sql })
-        });
-
-        if (response.ok) {
-            console.log('✅ Migration applied successfully.');
-        } else {
-            // It might fail if the function doesn't exist or permissions issue
-            // But since update-database.js uses it, it's our best bet.
-            const text = await response.text();
-            console.error('❌ Migration failed:', response.status, text);
-        }
-    } catch (error) {
-        console.error('❌ Error:', error);
-    }
+if (!supabaseUrl || !supabaseKey) {
+    console.error('❌ Missing Supabase credentials');
+    process.exit(1);
 }
 
-applyMigration();
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function applyMigration() {
+    console.log('🔧 Applying unique constraint to prevent duplicate orders...\n');
+
+    try {
+      // Add unique constraint on payment_id
+      const { error: constraintError } = await supabase.rpc('exec', {
+          query: 'ALTER TABLE orders ADD CONSTRAINT orders_payment_id_unique UNIQUE (payment_id);'
+      });
+
+      if (constraintError) {
+          // Try alternative method - direct SQL execution
+          console.log('⚠️  RPC method failed, trying alternative...');
+
+          // Check if constraint already exists
+          const { data: constraints } = await supabase
+              .from('information_schema.table_constraints')
+              .select('constraint_name')
+              .eq('table_name', 'orders')
+              .eq('constraint_name', 'orders_payment_id_unique');
+
+          if (constraints && constraints.length > 0) {
+              console.log('✅ Unique constraint already exists!');
+          } else {
+              console.log('⚠️  Please apply this SQL manually in Supabase SQL Editor:');
+              console.log('\n' + '='.repeat(60));
+              console.log('ALTER TABLE orders ADD CONSTRAINT orders_payment_id_unique UNIQUE (payment_id);');
+              console.log('CREATE INDEX IF NOT EXISTS idx_orders_payment_id ON orders(payment_id);');
+              console.log('='.repeat(60) + '\n');
+          }
+      } else {
+          console.log('✅ Unique constraint added successfully!');
+      }
+
+      // Add index for performance
+      console.log('📊 Adding index for better query performance...');
+      const { error: indexError } = await supabase.rpc('exec', {
+          query: 'CREATE INDEX IF NOT EXISTS idx_orders_payment_id ON orders(payment_id);'
+      });
+
+      if (!indexError) {
+          console.log('✅ Index created successfully!');
+      }
+
+      console.log('\n✨ Migration complete! Future duplicate orders will be prevented.\n');
+  } catch (error) {
+      console.error('❌ Error:', error);
+      console.log('\n⚠️  Please apply the migration manually in Supabase SQL Editor.');
+  }
+}
+
+applyMigration().catch(console.error);

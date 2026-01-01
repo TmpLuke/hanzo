@@ -3,8 +3,6 @@ import { useSearchParams, Link } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { createOrder } from "@/lib/discord";
-import { getCheckoutSessionInfo } from "@/lib/moneymotion";
 import { CheckCircle, Mail } from "lucide-react";
 
 export default function CheckoutSuccess() {
@@ -46,10 +44,8 @@ export default function CheckoutSuccess() {
         setRedemptionCode(redemptionData.code);
       }
 
-      // If order is still pending, mark it as completed and send Discord notification
-      if ((data as any).status === "pending") {
-        await completeOrder(data);
-      }
+      // Note: Order completion is handled by the MoneyMotion webhook
+      // We only display the order information here
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -57,87 +53,7 @@ export default function CheckoutSuccess() {
     }
   };
 
-  const completeOrder = async (orderData: any) => {
-    try {
-      let updatedAmount = Number(orderData.amount);
-      if (orderData.payment_id) {
-        try {
-          const info = await getCheckoutSessionInfo(orderData.payment_id);
-          if (info?.totalCents) {
-            const mmAmount = info.totalCents / 100;
-            if (!isNaN(mmAmount) && mmAmount > 0) {
-              updatedAmount = mmAmount;
-            }
-          }
-        } catch (e) {
-          console.error("MoneyMotion info fetch failed:", e);
-        }
-      }
 
-      const { error } = await supabase
-        .from("orders" as any)
-        .update({ status: "completed", amount: updatedAmount })
-        .eq("id", orderData.id);
-
-      if (error) {
-        console.error("Error updating order:", error);
-        return;
-      }
-
-      // Send Discord notification
-      await createOrder({
-        customerEmail: orderData.customer_email,
-        customerName: orderData.customer_name,
-        productId: orderData.product_id,
-        variantId: orderData.variant_id,
-        productName: orderData.product_name,
-        variantLabel: orderData.variant_label,
-        amount: updatedAmount,
-        paymentMethod: "MoneyMotion",
-        paymentId: orderData.payment_id,
-      });
-
-      // Send email to customer
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-        
-        // Get redemption code
-        const { data: redemptionData } = await supabase
-          .from("redemption_codes" as any)
-          .select("code")
-          .eq("order_id", orderData.id)
-          .single();
-        
-        const emailResponse = await fetch(`${apiUrl}/api/send-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            orderNumber: orderData.order_number,
-            customerEmail: orderData.customer_email,
-            customerName: orderData.customer_name || "Customer",
-            productName: orderData.product_name,
-            variantLabel: orderData.variant_label,
-            amount: orderData.amount,
-            redemptionCode: redemptionData?.code || null,
-          }),
-        });
-
-        if (!emailResponse.ok) {
-          console.error("Error sending email:", await emailResponse.text());
-        } else {
-          console.log("Order confirmation email sent!");
-        }
-      } catch (emailError) {
-        console.error("Email sending failed:", emailError);
-      }
-
-      console.log("Order completed and notification sent!");
-    } catch (error) {
-      console.error("Error completing order:", error);
-    }
-  };
 
   if (loading) {
     return (
