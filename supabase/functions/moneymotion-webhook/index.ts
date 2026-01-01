@@ -7,21 +7,18 @@ const corsHeaders = {
 };
 
 // Function to verify checkout session status with MoneyMotion API
+// Function to verify checkout session status with MoneyMotion API
 async function verifyCheckoutSession(sessionId: string, apiKey: string) {
   try {
+    // MoneyMotion API requires GET for this endpoint with query params
     const response = await fetch(
-      `https://api.moneymotion.io/checkoutSessions.getCompletedOrPendingCheckoutSessionInfo`,
+      `https://api.moneymotion.io/checkoutSessions.getCompletedOrPendingCheckoutSessionInfo?json.checkoutId=${sessionId}`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           "X-API-Key": apiKey,
         },
-        body: JSON.stringify({
-          json: {
-            checkoutSessionId: sessionId,
-          },
-        }),
       }
     );
 
@@ -58,33 +55,45 @@ serve(async (req) => {
       );
     }
 
-    // Verify signature (HMAC SHA-512)
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey(
-      "raw",
-      encoder.encode(webhookSecret),
-      { name: "HMAC", hash: "SHA-512" },
-      false,
-      ["sign"]
-    );
+    let isVerifiedSignature = false;
 
-    const signatureBuffer = await crypto.subtle.sign(
-      "HMAC",
-      key,
-      encoder.encode(rawBody)
-    );
-
-    const calculatedSignature = Array.from(new Uint8Array(signatureBuffer))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-
-    if (signature !== calculatedSignature) {
-      console.error("Invalid signature");
-      return new Response(
-        JSON.stringify({ error: "Invalid signature" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    if (webhookSecret && signature) {
+      // Verify signature (HMAC SHA-512)
+      const encoder = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(webhookSecret),
+        { name: "HMAC", hash: "SHA-512" },
+        false,
+        ["sign"]
       );
+
+      const signatureBuffer = await crypto.subtle.sign(
+        "HMAC",
+        key,
+        encoder.encode(rawBody)
+      );
+
+      const calculatedSignature = Array.from(new Uint8Array(signatureBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+      if (signature === calculatedSignature) {
+        isVerifiedSignature = true;
+      } else {
+        console.error("Invalid signature");
+        // We continue to allow API verification, but we flag it
+      }
+    } else {
+      console.warn("No signature provided");
     }
+
+    /*
+       We do NOT return 401 immediately if signature fails, 
+       because we want to support manual verification via API check.
+       BUT we must ensure that if signature is invalid, we ONLY process 
+       if the API check returns "completed".
+    */
 
     // Parse webhook body
     const body = JSON.parse(rawBody);
@@ -99,13 +108,17 @@ serve(async (req) => {
 
       // Verify session status with MoneyMotion API
       let sessionInfo = null;
+      let isPaymentVerified = false;
+
       if (apiKey) {
         sessionInfo = await verifyCheckoutSession(sessionId, apiKey);
         if (sessionInfo) {
           console.log("Session verified:", sessionInfo);
           
           // Check if session is actually completed
-          if (sessionInfo.status !== "completed" && sessionInfo.status !== "pending") {
+          if (sessionInfo.status === "completed") {
+            isPaymentVerified = true;
+          } else if (sessionInfo.status !== "pending") {
             console.error("Session not completed:", sessionInfo.status);
             return new Response(
               JSON.stringify({ error: "Session not completed" }),
@@ -113,6 +126,14 @@ serve(async (req) => {
             );
           }
         }
+      }
+
+      // SECURITY CRITICAL: Ensure we have either a valid signature OR a verified payment status from API
+      if (!isVerifiedSignature && !isPaymentVerified) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized: Invalid signature and unverified payment" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
 
       // Initialize Supabase client

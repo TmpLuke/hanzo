@@ -81,6 +81,30 @@ async function testMoneyMotionAPI() {
     console.log('\n✅ SUCCESS! Checkout session created!');
     console.log('Session ID:', sessionId);
     console.log('Checkout URL:', `https://moneymotion.io/checkout/${sessionId}`);
+
+    // Verify session info immediately (should be pending)
+    console.log('\n🔍 Verifying session info via API...');
+    const verifyRes = await fetch(
+      `${MONEYMOTION_API_URL}/checkoutSessions.getCompletedOrPendingCheckoutSessionInfo?json.checkoutId=${sessionId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": MONEYMOTION_API_KEY,
+          "X-Currency": "USD",
+        },
+      }
+    );
+
+    if (verifyRes.ok) {
+      const verifyData = await verifyRes.json();
+      console.log('✅ Verification API Response:', JSON.stringify(verifyData, null, 2));
+      const status = verifyData?.result?.data?.json?.status;
+      console.log(`Current Status: ${status}`);
+    } else {
+      console.error('❌ Verification check failed:', await verifyRes.text());
+    }
+
     console.log('\n🎯 Your MoneyMotion integration is working correctly!');
     console.log('\nNext steps:');
     console.log('1. Run the database migration in Supabase');

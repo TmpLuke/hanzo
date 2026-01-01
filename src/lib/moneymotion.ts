@@ -73,16 +73,16 @@ export async function getCheckoutSessionInfo(sessionId: string) {
   const apiKey = import.meta.env.VITE_MONEYMOTION_API_KEY;
   if (!apiKey) throw new Error("Missing VITE_MONEYMOTION_API_KEY");
   const payload = { json: { checkoutSessionId: sessionId } };
+  // Use GET request with query parameter
   const res = await fetch(
-    `${MONEYMOTION_API_URL}/checkoutSessions.getCompletedOrPendingCheckoutSessionInfo`,
+    `${MONEYMOTION_API_URL}/checkoutSessions.getCompletedOrPendingCheckoutSessionInfo?json.checkoutId=${sessionId}`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "X-API-Key": apiKey,
         "X-Currency": "USD",
       },
-      body: JSON.stringify(payload),
     }
   );
   const txt = await res.text();
